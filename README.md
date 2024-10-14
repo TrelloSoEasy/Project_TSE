@@ -64,7 +64,8 @@ Communication<p>
 
 
 ----
-#### ERD : ![image](https://github.com/user-attachments/assets/83849481-99fa-402b-87a6-748cc937a5af)
+#### ERD : ![image](https://github.com/user-attachments/assets/9ae15151-9c43-4af9-b10e-3898f6f9414e)
+
 
 ----
 #### 트러블슈팅:
