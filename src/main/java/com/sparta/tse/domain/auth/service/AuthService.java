@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.regex.Pattern;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -25,11 +27,30 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    @Transactional // 회원가입
+
+    // 이메일 유효성 검사 정규 표현식
+    private static final String EMAIL_PATTERN =
+            "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+
+    // 비밀번호 유효성 검사 정규 표현식
+    private static final String PASSWORD_PATTERN =
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+
+    // 회원가입
+    @Transactional
     public SignupResponse signup(SignupRequest signupRequest) {
 
+        // 이메일 형식 유효성 검사
+        if (!isValidEmail(signupRequest.getEmail())) {
+            throw new ApiException(ErrorStatus._BAD_REQUEST_INVALID_EMAIL);
+        }
+        // 이메일 중복 확인
         if (userRepository.existsByEmail(signupRequest.getEmail())) {
             throw new ApiException(ErrorStatus._DUPLICATED_EMAIL);
+        }
+        // 비밀번호 형식 유효성 검사
+        if (!isValidPassword(signupRequest.getPassword())) {
+            throw new ApiException(ErrorStatus._INVALID_PASSWORD_FORM);
         }
 
         String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
@@ -49,7 +70,18 @@ public class AuthService {
         return new SignupResponse(bearerToken);
     }
 
-    @Transactional // 로그인
+    // 이메일 유효성 검사 메서드
+    private boolean isValidEmail(String email) {
+        return Pattern.matches(EMAIL_PATTERN, email);
+    }
+
+    // 비밀번호 유효성 검사 메서드
+    private boolean isValidPassword(String password) {
+        return Pattern.matches(PASSWORD_PATTERN, password);
+    }
+
+    // 로그인
+    @Transactional
     public SigninResponse signin(SigninRequest signinRequest) {
         User user = userRepository.findByEmail(signinRequest.getEmail()).orElseThrow(
                 () -> new ApiException(ErrorStatus._BAD_REQUEST_NOT_FOUND_USER));
@@ -63,4 +95,5 @@ public class AuthService {
 
         return new SigninResponse(bearerToken);
     }
+
 }
