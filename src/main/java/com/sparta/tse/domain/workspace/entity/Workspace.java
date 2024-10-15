@@ -42,8 +42,7 @@ public class Workspace extends Timestamped {
     }
 
     public void update(WorkspaceUpdateRequestDto requestDto) {
-        if(!(requestDto.getNewWorkspaceName()==null||requestDto.getNewWorkspaceName().trim().isEmpty())) {
-
-        }
+        this.name= requestDto.getNewWorkspaceName();
+        this.description= requestDto.getNewWorkspaceDescription();
     }
 }

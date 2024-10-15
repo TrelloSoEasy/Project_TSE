@@ -1,5 +1,7 @@
 package com.sparta.tse.domain.workspace;
 
+import com.sparta.tse.domain.user.entity.User;
+import com.sparta.tse.domain.user.entity.UserRole;
 import com.sparta.tse.domain.workspace.dto.request.WorkspacePostRequestDto;
 import com.sparta.tse.domain.workspace.dto.response.WorkspacePostResponseDto;
 import com.sparta.tse.domain.workspace.entity.Workspace;
@@ -46,6 +48,12 @@ public class workspacetest {
         assertEquals(responseDto.getWorkspaceName(), requestDto.getWorkspaceName());
         assertEquals(responseDto.getWorkspaceDescription(), requestDto.getWorkspaceDescription());
 
+
+    }
+
+    @Test
+    public void asd() {
+        User user = new User("email","nickname","password", UserRole.USER_ROLE);
 
     }
 }
