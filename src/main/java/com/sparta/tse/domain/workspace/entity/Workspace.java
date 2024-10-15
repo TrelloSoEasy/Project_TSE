@@ -16,7 +16,7 @@ public class Workspace extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long workspaceId;
 
     @Column(length = 255,nullable = false)
     private String name;

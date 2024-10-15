@@ -1,4 +1,4 @@
-package com.sparta.tse.domain.workspace_member.entity;
+package com.sparta.tse.domain.workspaceMember.entity;
 
 import com.sparta.tse.domain.workspace.entity.Workspace;
 import jakarta.persistence.*;
@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor
-public class workspace_member {
+public class workspaceMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long workspaceMemberId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
@@ -22,7 +22,7 @@ public class workspace_member {
 //    private User user;
     private String role;
 
-    public workspace_member(Workspace workspace, String role/* ,User user*/) {
+    public workspaceMember(Workspace workspace, String role/* ,User user*/) {
         this.workspace = workspace;
         //this.user = user;
         this.role = role;
