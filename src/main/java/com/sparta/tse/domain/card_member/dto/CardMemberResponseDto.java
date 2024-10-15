@@ -1,6 +1,5 @@
 package com.sparta.tse.domain.card_member.dto;
 
-import com.sparta.tse.domain.card.dto.CardResponseDto;
 import com.sparta.tse.domain.card_member.entity.CardMember;
 import lombok.Getter;
 

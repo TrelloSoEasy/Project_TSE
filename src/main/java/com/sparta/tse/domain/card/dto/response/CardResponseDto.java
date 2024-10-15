@@ -1,4 +1,4 @@
-package com.sparta.tse.domain.card.dto;
+package com.sparta.tse.domain.card.dto.response;
 
 import com.sparta.tse.domain.card.entity.Card;
 import com.sparta.tse.domain.card_member.dto.CardMemberResponseDto;
@@ -7,9 +7,6 @@ import com.sparta.tse.domain.comment.dto.CommentResponseDto;
 import com.sparta.tse.domain.comment.entity.CardComment;
 import com.sparta.tse.domain.image.dto.ImagesResponseDto;
 import com.sparta.tse.domain.image.entity.Images;
-import com.sparta.tse.domain.user.dto.UserResponseDto;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -19,23 +16,21 @@ import java.util.stream.Collectors;
 @Getter
 public class CardResponseDto {
 
-    private Long cardListId;
-    private Long cardId;
-    private String cardTitle;
-    private String cardContent;
-    private String cardStatus;
-    private int cardSequence;
-    private LocalDateTime startAt;
-    private LocalDateTime endAt;
-    private List<CommentResponseDto> cardComments;
-    private List<CardMemberResponseDto> cardMemberList;
-    private List<ImagesResponseDto> imagesList;
+    private final Long cardListId;
+    private final Long cardId;
+    private final String cardTitle;
+    private final String cardContent;
+    private final int cardSequence;
+    private final LocalDateTime startAt;
+    private final LocalDateTime endAt;
+    private final List<CommentResponseDto> cardComments;
+    private final List<CardMemberResponseDto> cardMemberList;
+    private final List<ImagesResponseDto> imagesList;
 
     private CardResponseDto(Long cardListId,
                             Long cardId,
                             String cardTitle,
                             String cardContent,
-                            String cardStatus,
                             int cardSequence,
                             LocalDateTime startAt,
                             LocalDateTime endAt,
@@ -47,7 +42,6 @@ public class CardResponseDto {
         this.cardId = cardId;
         this.cardTitle = cardTitle;
         this.cardContent = cardContent;
-        this.cardStatus = cardStatus;
         this.cardSequence = cardSequence;
         this.startAt = startAt;
         this.endAt = endAt;
@@ -70,7 +64,6 @@ public class CardResponseDto {
                 card.getCardId(),
                 card.getCardTitle(),
                 card.getCardContent(),
-                card.getCardStatus(),
                 card.getCardSequence(),
                 card.getStartAt(),
                 card.getEndAt(),

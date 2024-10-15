@@ -3,7 +3,7 @@ spring:
     activate:
       on-profile: local
   datasource:
-    url: jdbc:mysql://localhost:3306/sparta
+    url: jdbc:mysql://localhost:3306/trello
     username: "root"
     password: "123456789"
     driver-class-name: com.mysql.cj.jdbc.Driver

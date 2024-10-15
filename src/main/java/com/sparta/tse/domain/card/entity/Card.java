@@ -1,8 +1,9 @@
 package com.sparta.tse.domain.card.entity;
 
 import com.sparta.tse.common.entity.Timestamped;
-import com.sparta.tse.domain.card.List.entity.CardList;
-import com.sparta.tse.domain.card.dto.CardRequestDto;
+import com.sparta.tse.domain.List.entity.CardList;
+import com.sparta.tse.domain.card.dto.request.CardModifyRequestDto;
+import com.sparta.tse.domain.card.dto.request.CardRequestDto;
 import com.sparta.tse.domain.card_member.entity.CardMember;
 import com.sparta.tse.domain.comment.entity.CardComment;
 import com.sparta.tse.domain.image.entity.Images;
@@ -39,9 +40,6 @@ public class Card extends Timestamped {
     @Column(name = "card_sequence")
     private int cardSequence;
 
-    @Column(name = "status")
-    private String cardStatus;
-
     @ManyToOne
     @JoinColumn(name = "card_list_id")
     private CardList cardList;
@@ -67,12 +65,20 @@ public class Card extends Timestamped {
     // 정적 팩토리 메서드
     public static Card createCard(CardRequestDto cardRequestDto, CardList cardList) {
         return new Card(
-                cardRequestDto.cardTitle,
-                cardRequestDto.cardContent,
-                cardRequestDto.startAt,
-                cardRequestDto.endAt,
-                cardRequestDto.cardSequence,
+                cardRequestDto.getCardTitle(),
+                cardRequestDto.getCardContent(),
+                cardRequestDto.getStartAt(),
+                cardRequestDto.getEndAt(),
+                cardRequestDto.getCardSequence(),
                 cardList
         );
+    }
+
+    public void cardModify(CardModifyRequestDto requestDto, CardList cardList) {
+        if (requestDto.getListId() != null) this.cardList = cardList;
+        if (requestDto.getCardTitle() != null) this.cardTitle = requestDto.getCardTitle();
+        if (requestDto.getCardContent() != null) this.cardContent = requestDto.getCardContent();
+        if (requestDto.getStartAt() != null) this.startAt = requestDto.getStartAt();
+        if (requestDto.getEndAt() != null) this.endAt = requestDto.getEndAt();
     }
 }

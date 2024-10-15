@@ -1,4 +1,4 @@
-package com.sparta.tse.domain.card.dto;
+package com.sparta.tse.domain.card.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +17,4 @@ public class CardRequestDto {
     public LocalDateTime endAt;
     public List<Long> userId;
     public int cardSequence;
-
-    public String cardStatus;
 }

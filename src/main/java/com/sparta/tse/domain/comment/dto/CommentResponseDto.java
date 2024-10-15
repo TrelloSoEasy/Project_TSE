@@ -16,7 +16,7 @@ public class CommentResponseDto {
     }
 
     private CommentResponseDto(Long commentId, String content) {
-        this.commentId =commentId;
+        this.commentId = commentId;
         this.content = content;
     }
 }

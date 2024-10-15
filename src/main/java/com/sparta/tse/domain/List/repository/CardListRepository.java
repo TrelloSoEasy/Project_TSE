@@ -1,6 +1,6 @@
-package com.sparta.tse.domain.card.List.repository;
+package com.sparta.tse.domain.List.repository;
 
-import com.sparta.tse.domain.card.List.entity.CardList;
+import com.sparta.tse.domain.List.entity.CardList;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CardListRepository extends JpaRepository<CardList, Long> {
