@@ -72,7 +72,8 @@ public enum ErrorStatus implements BaseCode{
 
 
     // 카드 예외
-    _BAD_REQUEST_NOT_LIST(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 리스트입니다.");
+    _NOT_FOUND_LIST(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 리스트입니다."),
+    _NOT_FOUND_CARD(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 카드입니다.");
 
 
     private final HttpStatus httpStatus;

@@ -19,6 +19,6 @@ spring:
         use_sql_comments: true
         dialect: org.hibernate.dialect.MySQL8Dialect
 
-logging:
-  level:
-    root: debug
+#logging:
+#  level:
+#    root: debug

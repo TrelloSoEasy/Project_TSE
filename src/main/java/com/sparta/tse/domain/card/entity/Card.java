@@ -1,8 +1,7 @@
 package com.sparta.tse.domain.card.entity;
 
 import com.sparta.tse.common.entity.Timestamped;
-import com.sparta.tse.domain.List.entity.CardList;
-import com.sparta.tse.domain.board.entity.Board;
+import com.sparta.tse.domain.card.List.entity.CardList;
 import com.sparta.tse.domain.card.dto.CardRequestDto;
 import com.sparta.tse.domain.card_member.entity.CardMember;
 import com.sparta.tse.domain.comment.entity.CardComment;
@@ -40,11 +39,14 @@ public class Card extends Timestamped {
     @Column(name = "card_sequence")
     private int cardSequence;
 
+    @Column(name = "status")
+    private String cardStatus;
+
     @ManyToOne
     @JoinColumn(name = "card_list_id")
     private CardList cardList;
 
-    @OneToMany
+    @OneToMany(mappedBy = "card")
     private List<CardComment> commentList = new ArrayList<>();
 
     @OneToMany(mappedBy = "card")

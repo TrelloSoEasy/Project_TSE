@@ -1,4 +1,4 @@
-package com.sparta.tse.domain.List.entity;
+package com.sparta.tse.domain.card.List.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
