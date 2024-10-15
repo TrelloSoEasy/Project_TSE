@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor
-public class workspace_member {
+public class WorkspaceMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,7 +22,7 @@ public class workspace_member {
 //    private User user;
     private String role;
 
-    public workspace_member(Workspace workspace, String role/* ,User user*/) {
+    public WorkspaceMember(Workspace workspace, String role/* ,User user*/) {
         this.workspace = workspace;
         //this.user = user;
         this.role = role;

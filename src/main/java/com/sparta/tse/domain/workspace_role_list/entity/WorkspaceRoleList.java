@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor
-public class workspace_role_list {
+public class WorkspaceRoleList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
