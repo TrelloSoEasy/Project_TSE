@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CardResponseDto {
 
-    private Long boardId;
+    private Long cardList;
     private Long cardId;
     private String cardTitle;
     private String cardContent;
@@ -25,7 +25,7 @@ public class CardResponseDto {
     private List<CardMember> cardMemberList;
     private List<Images> imagesList;
 
-    public static CardResponseDto of(Long boardId,
+    public static CardResponseDto of(Long cardListId,
                                      Long cardId,
                                      String cardTitle,
                                      String cardContent,
@@ -35,7 +35,7 @@ public class CardResponseDto {
                                      List<CardComment> cardCommentsList,
                                      List<CardMember> cardMemberList,
                                      List<Images> imagesList) {
-        return new CardResponseDto(boardId,
+        return new CardResponseDto(cardListId,
                 cardId,
                 cardTitle,
                 cardContent,

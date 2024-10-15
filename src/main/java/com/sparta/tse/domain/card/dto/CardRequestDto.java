@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CardRequestDto {
 
+    public Long listId;
     public String cardTitle;
     public String cardContent;
     public LocalDateTime startAt;

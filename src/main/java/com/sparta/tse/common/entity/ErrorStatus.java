@@ -68,7 +68,11 @@ public enum ErrorStatus implements BaseCode{
     // 리뷰 예외
     _BAD_REQUEST_NOT_ORDERER(HttpStatus.BAD_REQUEST, 400, "주문자가 아닙니다."),
     _BAD_REQUEST_DUP_REVIEW(HttpStatus.BAD_REQUEST, 400, "이미 리뷰를 작성했습니다."),
-    _BAD_REQUEST_ORDER_STATUS(HttpStatus.BAD_REQUEST, 400, "완료된 주문에 대해서만 리뷰 작성이 가능합니다.");
+    _BAD_REQUEST_ORDER_STATUS(HttpStatus.BAD_REQUEST, 400, "완료된 주문에 대해서만 리뷰 작성이 가능합니다."),
+
+
+    // 카드 예외
+    _BAD_REQUEST_NOT_LIST(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 리스트입니다.");
 
 
     private final HttpStatus httpStatus;

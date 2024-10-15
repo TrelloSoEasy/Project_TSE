@@ -1,6 +1,7 @@
 package com.sparta.tse.domain.card.entity;
 
 import com.sparta.tse.common.entity.Timestamped;
+import com.sparta.tse.domain.List.entity.CardList;
 import com.sparta.tse.domain.board.entity.Board;
 import com.sparta.tse.domain.card.dto.CardRequestDto;
 import com.sparta.tse.domain.card_member.entity.CardMember;
@@ -39,9 +40,9 @@ public class Card extends Timestamped {
     @Column(name = "card_sequence")
     private int cardSequence;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bard_id")
-    private Board board;
+    @ManyToOne
+    @JoinColumn(name = "card_list_id")
+    private CardList cardList;
 
     @OneToMany
     private List<CardComment> commentList = new ArrayList<>();
@@ -52,22 +53,24 @@ public class Card extends Timestamped {
     @OneToMany
     private List<Images> imageList = new ArrayList<>();
 
-    private Card(String cardTitle, String cardContent, LocalDateTime startAt, LocalDateTime endAt, int cardSequence) {
+    private Card(String cardTitle, String cardContent, LocalDateTime startAt, LocalDateTime endAt, int cardSequence, CardList cardList) {
         this.cardTitle = cardTitle;
         this.cardContent = cardContent;
         this.startAt = startAt;
         this.endAt = endAt;
         this.cardSequence = cardSequence;
+        this.cardList = cardList;
     }
 
     // 정적 팩토리 메서드
-    public static Card createCard(CardRequestDto cardRequestDto) {
+    public static Card createCard(CardRequestDto cardRequestDto, CardList cardList) {
         return new Card(
                 cardRequestDto.cardTitle,
                 cardRequestDto.cardContent,
                 cardRequestDto.startAt,
                 cardRequestDto.endAt,
-                cardRequestDto.cardSequence
+                cardRequestDto.cardSequence,
+                cardList
         );
     }
 }
