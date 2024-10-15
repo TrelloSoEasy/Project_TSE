@@ -2,6 +2,8 @@ package com.sparta.tse.domain.workspace.entity;
 
 import com.sparta.tse.common.entity.Timestamped;
 import com.sparta.tse.domain.board.entity.Board;
+import com.sparta.tse.domain.workspace.dto.request.WorkspacePostRequestDto;
+import com.sparta.tse.domain.workspace.dto.request.WorkspaceUpdateRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +26,7 @@ public class Workspace extends Timestamped {
     @Column(length = 255)
     private String description;
 
-    @OneToMany(mappedBy = "workspace")
+    @OneToMany(mappedBy = "workspace",cascade = CascadeType.ALL)
     private List<Board> boards;
 
     public Workspace(String name, String description) {
@@ -32,5 +34,16 @@ public class Workspace extends Timestamped {
         this.description = description;
         //보드를 init 하는 생성자가 필요할 것 같습니다.
         this.boards = new ArrayList<>();
+    }
+
+    public Workspace(WorkspacePostRequestDto requestDto) {
+        this.name = requestDto.getWorkspaceName();
+        this.description = requestDto.getWorkspaceDescription();
+    }
+
+    public void update(WorkspaceUpdateRequestDto requestDto) {
+        if(!(requestDto.getNewWorkspaceName()==null||requestDto.getNewWorkspaceName().trim().isEmpty())) {
+
+        }
     }
 }

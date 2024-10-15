@@ -1,10 +1,10 @@
 package com.sparta.tse.domain.invitation.entity;
 
+import com.sparta.tse.domain.user.entity.User;
 import com.sparta.tse.domain.workspace.entity.Workspace;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.apache.catalina.User;
 
 @Getter
 @Entity
@@ -20,23 +20,20 @@ public class Invitation {
     private Workspace workspace;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="sendinguser_id")
     private User sendingUser;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="receivinguser_id")
     private User receivingUser;
 
     @Enumerated(EnumType.STRING)
     private InvitationStatus invitationStatus;
 
-    public Invitation(User sendingUser, User receivingUser) {
+    public Invitation(User sendingUser, User receivingUser,Workspace workspace) {
         this.sendingUser = sendingUser;
         this.receivingUser = receivingUser;
         this.invitationStatus = InvitationStatus.Pending;
-    }
-
-    public rejectInvitation() {
-
+        this.workspace = workspace;
     }
 }
