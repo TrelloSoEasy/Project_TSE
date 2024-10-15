@@ -1,6 +1,7 @@
 package com.sparta.tse.domain.board.entity;
 
 import com.sparta.tse.common.entity.Timestamped;
+import com.sparta.tse.domain.workspace.entity.Workspace;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,14 +26,19 @@ public class Board extends Timestamped{
 
     private boolean isDeleted;
 
-//    @OneToMany(mappedBy = "board",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-//    private List<List> lists = new ArrayList<>();
+    //    @OneToMany(mappedBy = "board",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    //    private List<List> lists = new ArrayList<>();
 
-    public Board(String title, String backGroundColor) {
+    @ManyToOne
+    @JoinColumn(name= "workspace_id")
+    private Workspace workspace;
+
+    public Board(String title, String backGroundColor,Workspace workspace) {
         this.title = title;
         this.backGroundColor = backGroundColor;
         this.bookmark = Boardenum.OFF;
         this.isDeleted = false;
+        this.workspace = workspace;
         //리스트를 init하는 생성자가 필요할 거 같습니다.
     }
 }
