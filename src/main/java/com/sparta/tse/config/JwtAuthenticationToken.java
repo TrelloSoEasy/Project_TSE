@@ -1,6 +1,6 @@
 package com.sparta.tse.config;
 
-import com.sparta.tse.domain.user.entity.UserRole;
+import com.sparta.tse.domain.user.enums.UserRole;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 

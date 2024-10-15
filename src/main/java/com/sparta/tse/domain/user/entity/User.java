@@ -2,6 +2,7 @@ package com.sparta.tse.domain.user.entity;
 
 import com.sparta.tse.common.entity.Timestamped;
 import com.sparta.tse.config.AuthUser;
+import com.sparta.tse.domain.user.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

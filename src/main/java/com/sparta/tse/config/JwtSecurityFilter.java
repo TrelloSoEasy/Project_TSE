@@ -2,7 +2,7 @@ package com.sparta.tse.config;
 
 import com.sparta.tse.common.entity.ErrorStatus;
 import com.sparta.tse.common.exception.ApiException;
-import com.sparta.tse.domain.user.entity.UserRole;
+import com.sparta.tse.domain.user.enums.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;

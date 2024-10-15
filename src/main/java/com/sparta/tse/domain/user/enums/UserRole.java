@@ -1,4 +1,4 @@
-package com.sparta.tse.domain.user.entity;
+package com.sparta.tse.domain.user.enums;
 
 import lombok.Getter;
 
