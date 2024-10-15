@@ -7,8 +7,6 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum ErrorStatus implements BaseCode{
-
-
     //jwt token 예외
     _BAD_REQUEST_UNSUPPORTED_TOKEN(HttpStatus.BAD_REQUEST,400,"지원되지 않는 JWT 토큰입니다."),
     _BAD_REQUEST_ILLEGAL_TOKEN(HttpStatus.BAD_REQUEST,400,"잘못된 JWT 토큰입니다."),
@@ -72,8 +70,17 @@ public enum ErrorStatus implements BaseCode{
     _BAD_REQUEST_DUP_REVIEW(HttpStatus.BAD_REQUEST, 400, "이미 리뷰를 작성했습니다."),
     _BAD_REQUEST_ORDER_STATUS(HttpStatus.BAD_REQUEST, 400, "완료된 주문에 대해서만 리뷰 작성이 가능합니다."),
 
+    // 워크스페이스 예외
+    _NOT_FOUND_WORKSPACE(HttpStatus.NOT_FOUND,404,"워크스페이스를 찾을 수 없습니다"),
+    // 카드 예외
+    _BAD_REQUEST_NOT_LIST(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 리스트입니다."),
+
     // 서버 예외
     _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, "서버 내부 오류가 발생했습니다.");
+
+
+
+
 
 
 
