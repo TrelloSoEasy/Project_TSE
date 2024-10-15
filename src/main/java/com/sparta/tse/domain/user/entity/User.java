@@ -41,6 +41,6 @@ public class User extends Timestamped {
         return new User(authUser.getEmail(),authUser.getEmail(),authUser.getPassword(),authUser.getUserRole());
     }
 
-    // 워크스페이스,워크스페이스맴버?, 카드, 카드맴버?, 이모지
+
 
 }
