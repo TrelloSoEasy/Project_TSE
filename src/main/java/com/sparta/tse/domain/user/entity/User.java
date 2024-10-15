@@ -41,6 +41,4 @@ public class User extends Timestamped {
         return new User(authUser.getEmail(),authUser.getEmail(),authUser.getPassword(),authUser.getUserRole());
     }
 
-
-
 }
