@@ -36,4 +36,8 @@ public class Invitation {
         this.invitationStatus = InvitationStatus.Pending;
         this.workspace = workspace;
     }
+
+    public void acceptInvitation() {
+        this.invitationStatus = InvitationStatus.Accepted;
+    }
 }
