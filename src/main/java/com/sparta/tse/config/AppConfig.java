@@ -1,4 +1,4 @@
-package com.sparta.tse.domain;
+package com.sparta.tse.config;
 
 
 import org.springframework.context.annotation.Bean;
