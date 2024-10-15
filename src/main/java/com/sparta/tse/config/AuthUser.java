@@ -6,22 +6,19 @@ import lombok.Getter;
 @Getter
 public class AuthUser {
 
-    private final Long authUserId;
+    private final Long userId;
 
     private final String nickname;
 
     private final String email;
 
-    private final String password;
-
     private final UserRole userRole;
 
 
-    public AuthUser(Long authUserId, String nickname, String email,String password, UserRole userRole){
-        this.authUserId = authUserId;
+    public AuthUser(Long userId, String nickname, String email, UserRole userRole){
+        this.userId = userId;
         this.nickname = nickname;
         this.email = email;
-        this.password = password;
         this.userRole = userRole;
     }
 
