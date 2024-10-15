@@ -20,16 +20,19 @@ public class Board extends Timestamped{
     @Column(length = 20)
     private String backGroundColor;
 
-    @Column
+    @Enumerated(EnumType.STRING)
     private Boardenum bookmark;
+
+    private boolean isDeleted;
 
 //    @OneToMany(mappedBy = "board",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 //    private List<List> lists = new ArrayList<>();
 
-    public Board(String title, String backGroundColor, Boardenum bookmark) {
+    public Board(String title, String backGroundColor) {
         this.title = title;
         this.backGroundColor = backGroundColor;
-        this.bookmark = bookmark;
+        this.bookmark = Boardenum.OFF;
+        this.isDeleted = false;
         //리스트를 init하는 생성자가 필요할 거 같습니다.
     }
 }
