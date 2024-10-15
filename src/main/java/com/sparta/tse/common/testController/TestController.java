@@ -10,8 +10,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TestController {
 
+    private final Testservice testservice;
+
     @GetMapping("/test")
     public ApiResponse<Null> test() {
+        return ApiResponse.onSuccess(null);
+    }
+
+    @GetMapping("/test1")
+    public ApiResponse<Null> test1() {
+        testservice.testservice();
         return ApiResponse.onSuccess(null);
     }
 }

@@ -17,7 +17,7 @@ public enum ErrorStatus implements BaseCode{
     _NOT_FOUND_TOKEN(HttpStatus.NOT_FOUND, 404, "JWT 토큰이 필요합니다."),
     _NO_MORE_STORE(HttpStatus.BAD_REQUEST,400,"최대 3개 운영가능"),
 
-    _TEST_ERROR(HttpStatus.NO_CONTENT, 404, "ApiException 예외 처리 테스트"),
+    _TEST_ERROR(HttpStatus.BAD_REQUEST, 404, "ApiException 예외 처리 테스트"),
 
     //Auth,USer관련 코드
     _USERNAME_IS_SAME(HttpStatus.BAD_REQUEST,400,"변경하려는 이름이 전과 동일합니다"),
