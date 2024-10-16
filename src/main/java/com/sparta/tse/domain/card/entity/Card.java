@@ -6,7 +6,6 @@ import com.sparta.tse.domain.card.dto.request.CardModifyRequestDto;
 import com.sparta.tse.domain.card.dto.request.CardRequestDto;
 import com.sparta.tse.domain.card_member.entity.CardMember;
 import com.sparta.tse.domain.comment.entity.CardComment;
-import com.sparta.tse.domain.image.entity.Images;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,14 +43,12 @@ public class Card extends Timestamped {
     @JoinColumn(name = "card_list_id")
     private CardList cardList;
 
-    @OneToMany(mappedBy = "card")
+    @OneToMany(mappedBy = "card", cascade = CascadeType.REMOVE)
     private List<CardComment> commentList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "card")
+    @OneToMany(mappedBy = "card", cascade = CascadeType.REMOVE)
     private List<CardMember> cardMemberList = new ArrayList<>();
 
-    @OneToMany
-    private List<Images> imageList = new ArrayList<>();
 
     private Card(String cardTitle, String cardContent, LocalDateTime startAt, LocalDateTime endAt, int cardSequence, CardList cardList) {
         this.cardTitle = cardTitle;

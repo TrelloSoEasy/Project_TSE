@@ -72,7 +72,7 @@ public class WorkspaceService {
     public void deleteWorkspace(AuthUser authUser, Long workspaceId, WorkspaceDeleteRequestDto requestDto) {
         User user = userRepository.findByEmail(authUser.getEmail()).orElseThrow(
                 ()->new ApiException(ErrorStatus._NOT_FOUND_USER));
-        if(user.getIsDeleted()) {
+        if(user.getIsdeleted()) {
             throw new ApiException(ErrorStatus._DELETED_USER);
         }
         Workspace workspace = workspaceRepository.findById(workspaceId).orElseThrow(
