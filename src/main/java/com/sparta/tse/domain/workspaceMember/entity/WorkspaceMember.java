@@ -22,9 +22,10 @@ public class WorkspaceMember {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private MemberRole role;
 
-    public WorkspaceMember(Workspace workspace, String role, User user) {
+    public WorkspaceMember(Workspace workspace, User user, MemberRole role) {
         this.workspace = workspace;
         this.user = user;
         this.role = role;

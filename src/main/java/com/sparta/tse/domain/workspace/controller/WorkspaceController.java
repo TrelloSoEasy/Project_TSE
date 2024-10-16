@@ -2,8 +2,10 @@ package com.sparta.tse.domain.workspace.controller;
 
 import com.sparta.tse.common.entity.ApiResponse;
 import com.sparta.tse.config.AuthUser;
+import com.sparta.tse.domain.invitation.dto.request.InvitationPostRequestDto;
 import com.sparta.tse.domain.invitation.dto.request.postInvitationRequestDto;
 import com.sparta.tse.domain.invitation.service.InvitationService;
+import com.sparta.tse.domain.workspace.dto.request.WorkspaceDeleteRequestDto;
 import com.sparta.tse.domain.workspace.dto.request.WorkspacePostRequestDto;
 import com.sparta.tse.domain.workspace.dto.request.WorkspaceUpdateRequestDto;
 import com.sparta.tse.domain.workspace.dto.response.WorkspaceGetResponseDto;
@@ -31,34 +33,44 @@ public class WorkspaceController {
         WorkspacePostResponseDto responseDto = workspaceService.postWorkspace(requestDto,authUser);
         return ApiResponse.onSuccess(responseDto);
     }
+    //워크스페이스 이름,설명 변경
     @PutMapping("/{workspaceId}")
-    public ApiResponse<WorkspaceUpdateResponseDto> updateWorkspace(@RequestBody WorkspaceUpdateRequestDto requestDto,
-                                                                   @PathVariable Long workspaceId) {
-        WorkspaceUpdateResponseDto responseDto = workspaceService.updateWorkspace(workspaceId,requestDto);
-        return ApiResponse.onSuccess(responseDto);
+    public ApiResponse<Null> updateWorkspace(@RequestBody WorkspaceUpdateRequestDto requestDto,
+                                             @PathVariable Long workspaceId,
+                                             @AuthenticationPrincipal AuthUser authUser) {
+        workspaceService.updateWorkspace(workspaceId,requestDto,authUser);
+        return ApiResponse.onSuccess(null);
     }
 
     @GetMapping("/{userId}")
-    public ApiResponse<List<WorkspaceGetResponseDto>> getUserWorkspaces (@PathVariable Long userId) {
+    public ApiResponse<List<WorkspaceGetResponseDto>> getUserWorkspaces (@PathVariable Long userId,
+                                                                         @AuthenticationPrincipal AuthUser authUser) {
 
-        List<WorkspaceGetResponseDto> responseDtoList = workspaceService.getWorkspaces(userId);
+        List<WorkspaceGetResponseDto> responseDtoList = workspaceService.getWorkspaces(userId,authUser);
         return ApiResponse.onSuccess(responseDtoList);
     }
     //워크스페이스 초대 요청보내기
-    @PostMapping("/{workspaceId}/invitation/{receiveUserEmail}")
+    @PostMapping("/{workspaceId}/invitation")
     public void postInvitation(@PathVariable Long workspaceId,
-                               @PathVariable String receiveUserEmail,
-                               @AuthenticationPrincipal AuthUser authUser) {
-        invitationService.postInvitation(workspaceId,receiveUserEmail,authUser);
+                               @AuthenticationPrincipal AuthUser authUser,
+                               @RequestBody InvitationPostRequestDto requestDto) {
+        invitationService.postInvitation(workspaceId,requestDto,authUser);
     }
 
     //워크스페이스 초대 요청 받기
-    @PostMapping("/{workspaceId}/invitation/{receiveUserEmail}/accept")
+    @PostMapping("/{workspaceId}/invitation/{sendingUserId}/accept")
     public void acceptInvitation(@PathVariable Long workspaceId,
-                                 @PathVariable String receiveUserEmail,
+                                 @PathVariable Long sendingUserId,
                                  @AuthenticationPrincipal AuthUser authUser) {
-          invitationService.acceptInvitation(workspaceId,receiveUserEmail,authUser);
+          invitationService.acceptInvitation(workspaceId,sendingUserId,authUser);
 //        NotificationRequestDto requestDto = new NotificationRequestDto("MEMBER_ADDED", nickname);
 //        notificationService.notifiyMemberAdded(requestDto);
+    }
+
+    @DeleteMapping("/{workspaceId}")
+    public void deleteWorkspace(@AuthenticationPrincipal AuthUser authUser,
+                                @PathVariable Long workspaceId,
+                                @RequestBody WorkspaceDeleteRequestDto requestDto) {
+        workspaceService.deleteWorkspace(authUser,workspaceId,requestDto);
     }
 }

@@ -34,6 +34,7 @@ public class User extends Timestamped {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
+
     // 회원탈퇴 유무
     private Boolean isdeleted = false;
 
@@ -63,10 +64,10 @@ public class User extends Timestamped {
     public static User fromAuthUser(AuthUser authUser){
         return new User(authUser.getEmail(),authUser.getEmail(),authUser.getUserRole());
     }
-
     // 회원 탈퇴 메소드
     public void deletedUser (String email, String password){
         this.isdeleted = true;
     }
+
 
 }

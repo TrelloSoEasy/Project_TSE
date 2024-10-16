@@ -10,6 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,20 +23,24 @@ public class CardController {
     private final CardService cardService;
 
     @PostMapping("/cards")
-    public ApiResponse<CardResponseDto> cardCreate(@AuthenticationPrincipal AuthUser user, @RequestBody CardRequestDto requestDto) {
-        return ApiResponse.createSuccess("카드 생성 완료",HttpStatus.OK.value(), cardService.cardCreate(requestDto));
+    public ApiResponse<CardResponseDto> cardCreate(@AuthenticationPrincipal AuthUser user,
+                                                   @RequestPart CardRequestDto requestDto,
+                                                   @RequestPart(value = "file", required = false) List<MultipartFile> file) throws IOException {
+        return ApiResponse.createSuccess("카드 생성 완료", HttpStatus.OK.value(), cardService.cardCreate(requestDto, file, user));
     }
 
     @GetMapping("/cards/{cardId}")
-    public ApiResponse<CardResponseDto> cardRead(@AuthenticationPrincipal AuthUser user,@PathVariable Long cardId) {
-        return ApiResponse.onSuccess(cardService.cardRead(cardId));
+    public ApiResponse<CardResponseDto> cardRead(@AuthenticationPrincipal AuthUser user, @PathVariable Long cardId) {
+        return ApiResponse.onSuccess(cardService.cardRead(cardId, user));
     }
 
     @PatchMapping("/cards/{cardId}")
-    public ApiResponse<CardResponseDto> cardModify(@AuthenticationPrincipal AuthUser user,@PathVariable Long cardId, @RequestBody CardModifyRequestDto requestDto) {
-//        NotificationRequestDto requestDto = new NotificationRequestDto("CARD_UPDATED", nickname);
-//        notificationService.notifiyMemberAdded(requestDto);
-        return ApiResponse.createSuccess("수정이 완료 되었습니다.", HttpStatus.OK.value(), cardService.cardModify(cardId, requestDto));
+    public ApiResponse<CardResponseDto> cardModify(@AuthenticationPrincipal AuthUser user,
+                                                   @PathVariable Long cardId,
+                                                   @RequestPart CardModifyRequestDto requestDto,
+                                                   @RequestPart(value = "file", required = false) List<MultipartFile> file
+    ) throws IOException {
+        return ApiResponse.createSuccess("수정이 완료 되었습니다.", HttpStatus.OK.value(), cardService.cardModify(cardId, requestDto, file, user));
     }
 
     @DeleteMapping("/cards/{cardId}")

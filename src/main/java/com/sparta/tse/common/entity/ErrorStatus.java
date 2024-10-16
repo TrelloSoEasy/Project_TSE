@@ -87,9 +87,15 @@ public enum ErrorStatus implements BaseCode{
     _NOT_FOUND_INVITATION(HttpStatus.NOT_FOUND,404 ,"초대를 찾을 수 없습니다"),
 
     // 서버 예외
-    _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, "서버 내부 오류가 발생했습니다.");
+    _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, "서버 내부 오류가 발생했습니다."),
+    _NOT_FOUND_ROLE(HttpStatus.NOT_FOUND,404 ,"해당 권한이 없습니다" ),
+    _NOT_PERMITTED_USER(HttpStatus.FORBIDDEN,403 ,"해당 작업은 OWNER 권한을 가진 유저만 가능합니다"),
 
     // 코멘트 예외
+
+    // 파일 예외
+    _FILE_SIZE_OVER_ERROR(HttpStatus.BAD_REQUEST, 404, "파일 크기는 5MB를 초과할 수 없습니다."),
+    _FILE_TYPE_MISS_MATCH(HttpStatus.BAD_REQUEST, 404, "jpeg, png, pdf, csv 파일만 지원 합니다.");
 
 
 
