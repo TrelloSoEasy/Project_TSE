@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericToStringSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @EnableCaching
@@ -17,12 +19,17 @@ public class RedisConfig {
         return new LettuceConnectionFactory("localhost", 6379);
     }
 
-    // 상호작용을 위해
+    // RedisTemplate<String, Integer> 설정
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
-        // Redis 의 데이터를 읽고 쓰는데 사용되는 주요 클래스
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
+    public RedisTemplate<String, Integer> redisTemplate() {
+        RedisTemplate<String, Integer> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
+
+        // Key를 String으로 직렬화
+        template.setKeySerializer(new StringRedisSerializer());
+        // Value를 Integer로 직렬화
+        template.setValueSerializer(new GenericToStringSerializer<>(Integer.class));
+
         return template;
     }
 }
