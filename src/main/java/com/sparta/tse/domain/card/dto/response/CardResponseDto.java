@@ -18,6 +18,7 @@ public class CardResponseDto {
 
     private final Long cardListId;
     private final Long cardId;
+    private final Long cardUserId;
     private final String cardTitle;
     private final String cardContent;
     private final int cardSequence;
@@ -29,6 +30,7 @@ public class CardResponseDto {
 
     private CardResponseDto(Long cardListId,
                             Long cardId,
+                            Long cardUserId,
                             String cardTitle,
                             String cardContent,
                             int cardSequence,
@@ -40,6 +42,7 @@ public class CardResponseDto {
 
         this.cardListId = cardListId;
         this.cardId = cardId;
+        this.cardUserId = cardUserId;
         this.cardTitle = cardTitle;
         this.cardContent = cardContent;
         this.cardSequence = cardSequence;
@@ -62,6 +65,7 @@ public class CardResponseDto {
     public static CardResponseDto of(Card card, List<File> fileList) {
         return new CardResponseDto(card.getCardList().getCardListId(),
                 card.getCardId(),
+                card.getCardUserId(),
                 card.getCardTitle(),
                 card.getCardContent(),
                 card.getCardSequence(),

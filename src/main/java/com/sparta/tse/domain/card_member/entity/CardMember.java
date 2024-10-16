@@ -37,4 +37,8 @@ public class CardMember {
         return new CardMember(user, card);
     }
 
+    public void cardMemberRoleModify(CardMemberRole cardMemberRole) {
+        this.role = cardMemberRole;
+    }
+
 }

@@ -75,7 +75,9 @@ public enum ErrorStatus implements BaseCode{
     _NOT_FOUND_WORKSPACE(HttpStatus.NOT_FOUND,404,"워크스페이스를 찾을 수 없습니다"),
     // 카드 예외
     _NOT_FOUND_LIST(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 리스트입니다."),
-    _BAD_REQUEST_NOT_FOUND_CARD_MEMBER(HttpStatus.BAD_REQUEST, 400, "카드에 멤버가 존재하지 않음"),
+    _NOT_FOUND_CARD_MEMBER(HttpStatus.BAD_REQUEST, 400, "카드에 멤버가 존재하지 않음"),
+    _NOT_THE_AUTHOR(HttpStatus.NOT_ACCEPTABLE, 406, "카드 작성자가 아닙니다."),
+
     _NOT_FOUND_CARD(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 카드입니다."),
     _BAD_REQUEST_NOT_LIST(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 리스트입니다."),
     //유저예외

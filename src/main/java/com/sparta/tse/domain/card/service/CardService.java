@@ -12,6 +12,7 @@ import com.sparta.tse.domain.card.dto.response.CardResponseDto;
 import com.sparta.tse.domain.card.entity.Card;
 import com.sparta.tse.domain.card.repository.CardRepository;
 import com.sparta.tse.domain.card_member.entity.CardMember;
+import com.sparta.tse.domain.card_member.entity.CardMemberRole;
 import com.sparta.tse.domain.card_member.repository.CardMemberRepository;
 import com.sparta.tse.domain.file.entity.File;
 import com.sparta.tse.domain.file.enums.FileEnum;
@@ -57,7 +58,7 @@ public class CardService {
                         new ApiException(ErrorStatus._NOT_FOUND_LIST)
                 );
 
-        Card savedCard = cardRepository.save(Card.createCard(requestDto, savedList));
+        Card savedCard = cardRepository.save(Card.createCard(requestDto, savedList, authUser.getUserId()));
 
         for (Long assignedUserId : requestDto.userId) {
             User user = userRepository.findById(assignedUserId).orElseThrow(() ->
@@ -78,6 +79,9 @@ public class CardService {
 
     public CardResponseDto cardRead(Long cardId, AuthUser user) {
 
+        if (cardMemberRepository.findByMemberIdAndCardId(user.getUserId(), cardId).isEmpty())
+            throw new ApiException(ErrorStatus._NOT_FOUND_ROLE);
+
         Card savedCard = cardRepository.findById(cardId).orElseThrow(() ->
                 new ApiException(ErrorStatus._NOT_FOUND_CARD)
         );
@@ -90,35 +94,48 @@ public class CardService {
 
 
     @Transactional
-    public CardResponseDto cardModify(Long cardId, CardModifyRequestDto requestDto, List<MultipartFile> file, AuthUser authUser) throws IOException {
+    public CardResponseDto cardModify(CardModifyRequestDto requestDto, List<MultipartFile> file, AuthUser authUser) throws IOException {
+
         // 카드 조회
-        Card savedCard = cardRepository.findById(cardId)
+        Card savedCard = cardRepository.findById(requestDto.getCardId())
                 .orElseThrow(() -> new ApiException(ErrorStatus._NOT_FOUND_CARD));
 
-        // List 찾기
-        CardList savedList = cardListRepository.findById(requestDto.getListId())
-                .orElseThrow(() -> new ApiException(ErrorStatus._NOT_FOUND_LIST));
 
         // Card 객체로 CardMember 목록을 조회
         List<CardMember> existingMembers = cardMemberRepository.findAllByCard(savedCard);
 
+
+        CardMember matchingMember = existingMembers.stream()
+                .filter(member -> member.getUser().getUserId().equals(authUser.getUserId()))
+                .findFirst() // 일치하는 첫 번째 멤버만 찾음
+                .orElseThrow(() -> new ApiException(ErrorStatus._BAD_REQUEST_NOT_FOUND_USER)); // 없으면 예외 처리
+
+        if (matchingMember.getRole().equals(CardMemberRole.USER))
+            throw new ApiException(ErrorStatus._NOT_FOUND_ROLE);
+
         // 요청으로 들어온 userId 목록
-        Set<Long> requestedUserIds = new HashSet<>(requestDto.getUserId());
-        System.out.println("요청으로 들어온 userId 목록 = " + requestedUserIds.toString());
 
         // 현재 카드에 저장된 멤버의 userId 목록
         Set<Long> existingUserIds = existingMembers.stream()
                 .map(cardMember -> cardMember.getUser().getUserId())
                 .collect(Collectors.toSet());
-        System.out.println("현재 카드에 저장된 멤버의 userId 목록 = " + existingUserIds.toString());
 
 
-        // 삭제 될 멤버
-        toDeletedMember(savedCard, requestedUserIds, existingUserIds);
+        if (requestDto.getUserId() != null) {
+            Set<Long> requestedUserIds = new HashSet<>(requestDto.getUserId());
 
-        // 추가할 멤버
-        addMember(savedCard, requestedUserIds, existingUserIds);
+            if (!savedCard.getCardUserId().equals(authUser.getUserId()))
+                throw new ApiException(ErrorStatus._NOT_FOUND_ROLE);
 
+            // 삭제 될 멤버
+            toDeletedMember(savedCard, requestedUserIds, existingUserIds);
+
+            // 추가할 멤버
+            addMember(savedCard, requestedUserIds, existingUserIds);
+        }
+        // List 찾기
+        CardList savedList = cardListRepository.findById(requestDto.getListId())
+                .orElseThrow(() -> new ApiException(ErrorStatus._NOT_FOUND_LIST));
 
         savedCard.cardModify(requestDto, savedList);
 
@@ -130,20 +147,24 @@ public class CardService {
         return CardResponseDto.of(savedCard, image);
     }
 
-    private User getUser(Long userIdToDelete) {
-        User user = userRepository.findById(userIdToDelete)
+    private User getUser(Long userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ApiException(ErrorStatus._BAD_REQUEST_NOT_FOUND_USER));
         return user;
     }
 
 
     @Transactional
-    public ApiResponse cardDeleted(Long cardId) {
+    public ApiResponse cardDeleted(Long cardId, AuthUser authUser) {
 
         // 카드 조회
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new ApiException(ErrorStatus._NOT_FOUND_CARD));
         cardMemberRepository.deleteByCard(card);
+
+        if (!card.getCardUserId().equals(authUser.getUserId()))
+            throw new ApiException(ErrorStatus._NOT_THE_AUTHOR);
+
         cardRepository.deleteById(cardId);
         return new ApiResponse("삭제 성공", HttpStatus.OK.value(), null);
     }
@@ -157,7 +178,6 @@ public class CardService {
         // 추가할 멤버 (요청에서 왔지만 기존에 없는 멤버)
         Set<Long> usersToAdd = new HashSet<>(requestedUserIds);
         usersToAdd.removeAll(existingUserIds);
-        System.out.println("추가할 멤버 (요청에서 왔지만 기존에 없는 멤버) = " + usersToAdd.toString());
 
         // 추가할 멤버 처리
         for (Long userIdToAdd : usersToAdd) {
@@ -170,13 +190,12 @@ public class CardService {
         // 삭제할 멤버 (기존에 있지만 요청에 없는 멤버)
         Set<Long> usersToDelete = new HashSet<>(existingUserIds);
         usersToDelete.removeAll(requestedUserIds);
-        System.out.println("삭제할 멤버 (기존에 있지만 요청에 없는 멤버) = " + usersToDelete.toString());
 
         // 삭제할 멤버 처리
         for (Long userIdToDelete : usersToDelete) {
             User user = getUser(userIdToDelete);
             CardMember cardMemberToDelete = cardMemberRepository.findByUserAndCard(user, savedCard)
-                    .orElseThrow(() -> new ApiException(ErrorStatus._BAD_REQUEST_NOT_FOUND_CARD_MEMBER));
+                    .orElseThrow(() -> new ApiException(ErrorStatus._NOT_FOUND_CARD_MEMBER));
             cardMemberRepository.delete(cardMemberToDelete);
         }
     }
