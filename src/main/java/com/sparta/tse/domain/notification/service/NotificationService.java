@@ -1,41 +1,55 @@
+
 package com.sparta.tse.domain.notification.service;
 
 
 import com.sparta.tse.common.entity.ApiResponse;
+import com.sparta.tse.domain.notification.dto.NotificationRequestDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
 
-    private final RestTemplate restTemplate;
 
-    private final String discordWebhookUrl =
-            "https://discordapp.com/api/webhooks/1295553870671646791/ETFI6_Nw2-87wzm7iXl1-tG36OBOgXbO5fV1E6EwXXriNMGJ0ky92rajvpRfwCmA4PyC";
+    private final NotificationSender discordSender;
 
-    public ApiResponse notifyDiscord(String message) {
+    // 멤버 추가 알림
+    public ApiResponse<String> notifyMemberAdded(NotificationRequestDto requestDto) {
+        String message = String.format("%s 멤버가 추가되었습니다.", requestDto.getNickname());
+        return discordSender.sendNotification(message);
+    }
 
-        // 메세지 포맷 : 전송하려는 메세지(디스코드 채널에 표시)
-        String payload = "{\"content\" : \"" + message + "\"}";
+    // 카드 변경 알림
+    public ApiResponse<String> notifyCardUpdated(NotificationRequestDto requestDto) {
+        String message = String.format("%s님의 카드가 변경되었습니다.", requestDto.getNickname());
+        return discordSender.sendNotification(message);
+    }
 
-        // http 헤더 설정
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        // http 요청본문, 헤더를 포함한  httpEntity 생성
-        HttpEntity<String> request = new HttpEntity<>(payload, headers);
-
-        try {
-            restTemplate.postForObject(discordWebhookUrl, request, String.class);
-            return ApiResponse.createSuccess("알림이 성공적으로 전송되었습니다.", 200, message);
-        } catch (RestClientException e) {
-            return ApiResponse.createError("알림 전송에 실패하였습니다.", 500);
-        }
+    // 댓글 작성 알림
+    public ApiResponse<String> notifyCommentUpdated(NotificationRequestDto requestDto) {
+        String message = String.format("%s님의 댓글이 작성되었습니다.", requestDto.getNickname());
+        return discordSender.sendNotification(message);
     }
 }
+
+
+/*
+
+다른 서비스 로직에 추가해줘야할 부분
+
+// 멤버 추가
+NotificationRequestDto requestDto = new NotificationRequestDto("MEMBER_ADDED", nickname);
+notificationService.notifiyMemberAdded(requestDto);
+
+// 댓글 작성
+NotificationRequestDto requestDto = new NotificationRequestDto("CARD_UPDATED", nickname);
+notificationService.notifiyMemberAdded(requestDto);
+
+// 카드 변경
+NotificationRequestDto requestDto = new NotificationRequestDto("CARD_UPDATED", nickname);
+notificationService.notifiyMemberAdded(requestDto);
+*//*
+
+
+---*/
