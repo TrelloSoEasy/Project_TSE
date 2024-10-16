@@ -34,6 +34,7 @@ public enum ErrorStatus implements BaseCode{
     _INVALID_USER_ROLE(HttpStatus.BAD_REQUEST,400,"잘못된 유저권한 입니다."),
     _USER_ROLE_IS_NULL(HttpStatus.BAD_REQUEST,400,"유저 권한이 없습니다."),
     _INVALID_USER_NAME(HttpStatus.BAD_REQUEST,400 ,"유저이름은 최소 3자 이상,20자 이하여야 하며, 대소문자 포함 영문,숫자만 사용가능합니다." ),
+    _AUTH_DELETED_USER(HttpStatus.FORBIDDEN, 403, "로그인 이메일과 입력한 이메일이 일치하지 않습니다."),
 
     // 메뉴 예외
     _AUTH_OWNER_MENU(HttpStatus.FORBIDDEN, 403, "메뉴 생성 및 수정은 사장님만 가능합니다."),
@@ -86,7 +87,11 @@ public enum ErrorStatus implements BaseCode{
     _NOT_FOUND_INVITATION(HttpStatus.NOT_FOUND,404 ,"초대를 찾을 수 없습니다"),
 
     // 서버 예외
-    _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, "서버 내부 오류가 발생했습니다.");
+    _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, "서버 내부 오류가 발생했습니다."),
+    _NOT_FOUND_ROLE(HttpStatus.NOT_FOUND,404 ,"해당 권한이 없습니다" ),
+    _NOT_PERMITTED_USER(HttpStatus.FORBIDDEN,403 ,"해당 작업은 OWNER 권한을 가진 유저만 가능합니다");
+
+    // 코멘트 예외
 
 
 
