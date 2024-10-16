@@ -1,13 +1,17 @@
 package com.sparta.tse.domain.comment.entity;
 
+import com.sparta.tse.common.entity.Timestamped;
 import com.sparta.tse.domain.card.entity.Card;
+import com.sparta.tse.domain.comment.dto.CommentRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "comments")
-public class CardComment {
+@NoArgsConstructor
+public class CardComment extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +24,12 @@ public class CardComment {
     private Card card;
 
 
-    public CardComment() {
+    public CardComment(String content, Card card) {
+        this.content = content;
+        this.card = card;
+    }
 
+    public void commentUpdate(CommentRequestDto commentRequestDto) {
+        this.content = commentRequestDto.getContent();
     }
 }
