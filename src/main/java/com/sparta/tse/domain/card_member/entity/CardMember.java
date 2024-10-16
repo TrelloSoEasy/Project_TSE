@@ -16,9 +16,20 @@ public class CardMember {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cardMemberId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "card_id")
     private Card card;
+
+    private CardMember(User user , Card card) {
+        this.user = user;
+        this.card = card;
+    }
+    public static CardMember of(User user, Card card) {
+        return new CardMember(user, card);
+    }
+
 }

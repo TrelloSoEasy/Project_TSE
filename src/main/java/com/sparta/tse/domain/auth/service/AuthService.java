@@ -53,6 +53,7 @@ public class AuthService {
             throw new ApiException(ErrorStatus._INVALID_PASSWORD_FORM);
         }
 
+
         String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
 
         UserRole userRole = UserRole.of(signupRequest.getUserRole());
@@ -63,13 +64,13 @@ public class AuthService {
                 encodedPassword,
                 userRole
         );
+
         User savedUser = userRepository.save(newUser);
 
         String bearerToken = jwtUtil.createToken(savedUser.getUserId(),savedUser.getNickname(), savedUser.getEmail(), userRole);
 
         return new SignupResponse(bearerToken);
     }
-
     // 이메일 유효성 검사 메서드
     private boolean isValidEmail(String email) {
         return Pattern.matches(EMAIL_PATTERN, email);
@@ -89,6 +90,11 @@ public class AuthService {
         // 로그인 시 이메일과 비밀번호가 일치하지 않을 경우 401을 반환합니다.
         if (!passwordEncoder.matches(signinRequest.getPassword(), user.getPassword())) {
             throw new ApiException(ErrorStatus._PASSWORD_NOT_MATCHES);
+        }
+
+        // 탈퇴한 유저일 경우 로그인 불가
+        if (user.getIsdeleted()){
+            throw new ApiException(ErrorStatus._DELETED_USER);
         }
 
         String bearerToken = jwtUtil.createToken(user.getUserId(), user.getNickname(), user.getEmail(), user.getUserRole());
