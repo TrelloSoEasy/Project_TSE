@@ -66,8 +66,4 @@ public class JwtUtil {
                 .getBody();
     }
 
-//    // 토큰 유효기간 강제로 줄이기 (로그아웃)
-//    public String logoutWithToken (HttpServletRequest request){
-//        this.TOKEN_TIME = 1 * 1000L;
-//    }
 }
