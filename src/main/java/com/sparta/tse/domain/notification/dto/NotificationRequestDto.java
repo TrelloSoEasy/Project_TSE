@@ -10,4 +10,5 @@ public class NotificationRequestDto {
 
     private EventType eventType;
     private String nickname;
+    private Long cardId;
 }

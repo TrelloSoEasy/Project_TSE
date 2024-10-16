@@ -3,6 +3,7 @@ package com.sparta.tse.domain.card.service;
 import com.sparta.tse.common.entity.ApiResponse;
 import com.sparta.tse.common.entity.ErrorStatus;
 import com.sparta.tse.common.exception.ApiException;
+import com.sparta.tse.config.AuthUser;
 import com.sparta.tse.domain.List.entity.CardList;
 import com.sparta.tse.domain.List.repository.CardListRepository;
 import com.sparta.tse.domain.card.dto.request.CardModifyRequestDto;
@@ -12,6 +13,9 @@ import com.sparta.tse.domain.card.entity.Card;
 import com.sparta.tse.domain.card.repository.CardRepository;
 import com.sparta.tse.domain.card_member.entity.CardMember;
 import com.sparta.tse.domain.card_member.repository.CardMemberRepository;
+import com.sparta.tse.domain.notification.dto.NotificationRequestDto;
+import com.sparta.tse.domain.notification.enums.EventType;
+import com.sparta.tse.domain.notification.service.NotificationService;
 import com.sparta.tse.domain.user.entity.User;
 import com.sparta.tse.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.sparta.tse.domain.notification.enums.EventType.CARD_UPDATED;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +42,8 @@ public class CardService {
     private final UserRepository userRepository;
 
     private final CardMemberRepository cardMemberRepository;
+
+    private final NotificationService notificationService;
 
     @Transactional
     public CardResponseDto cardCreate(CardRequestDto requestDto) {
@@ -67,7 +74,7 @@ public class CardService {
     }
 
     @Transactional
-    public CardResponseDto cardModify(Long cardId, CardModifyRequestDto requestDto) {
+    public CardResponseDto cardModify(AuthUser authUser, Long cardId, CardModifyRequestDto requestDto) {
         // 카드 조회
         Card findCard = cardRepository.findById(cardId)
                 .orElseThrow(() -> new ApiException(ErrorStatus._NOT_FOUND_CARD));
@@ -103,6 +110,14 @@ public class CardService {
             CardMember cardMemberToDelete = cardMemberRepository.findByUserAndCard(user, findCard)
                     .orElseThrow(() -> new ApiException(ErrorStatus._BAD_REQUEST_NOT_FOUND_CARD_MEMBER));
 
+            /*NotificationRequestDto notificationRequestDto = new NotificationRequestDto(
+                    CARD_UPDATED,
+                    user.getNickname(),
+                    findCard.getCardId()
+            );
+
+            notificationService.notifyMemberDeleted(notificationRequestDto);*/
+
             cardMemberRepository.delete(cardMemberToDelete);
         }
 
@@ -110,6 +125,15 @@ public class CardService {
         for (Long userIdToAdd : usersToAdd) {
             User user = userRepository.findById(userIdToAdd)
                     .orElseThrow(() -> new ApiException(ErrorStatus._BAD_REQUEST_NOT_FOUND_USER));
+
+            NotificationRequestDto notificationRequestDto = new NotificationRequestDto(
+                    CARD_UPDATED,
+                    user.getNickname(),
+                    findCard.getCardId()
+            );
+
+            notificationService.notifyMemberAdded(notificationRequestDto);
+
 
             cardMemberRepository.save(CardMember.of(user, findCard));
         }
@@ -125,7 +149,16 @@ public class CardService {
 
         findCard.cardModify(requestDto, savedList);
 
+        NotificationRequestDto cardNotificationRequestDto = new NotificationRequestDto(
+                CARD_UPDATED,
+                authUser.getNickname(),
+                findCard.getCardId()
+        );
+
+        notificationService.notifyCardUpdated(cardNotificationRequestDto);
+
         return CardResponseDto.of(findCard);
+
     }
 
     @Transactional

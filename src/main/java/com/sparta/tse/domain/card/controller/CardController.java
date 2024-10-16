@@ -32,7 +32,7 @@ public class CardController {
     public ApiResponse<CardResponseDto> cardModify(@AuthenticationPrincipal AuthUser user,@PathVariable Long cardId, @RequestBody CardModifyRequestDto requestDto) {
 //        NotificationRequestDto requestDto = new NotificationRequestDto("CARD_UPDATED", nickname);
 //        notificationService.notifiyMemberAdded(requestDto);
-        return ApiResponse.createSuccess("수정이 완료 되었습니다.", HttpStatus.OK.value(), cardService.cardModify(cardId, requestDto));
+        return ApiResponse.createSuccess("수정이 완료 되었습니다.", HttpStatus.OK.value(), cardService.cardModify(user,cardId, requestDto));
     }
 
     @DeleteMapping("/cards/{cardId}")
