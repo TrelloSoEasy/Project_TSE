@@ -11,6 +11,7 @@ public class ApiResponse<T> {
     private final Integer statusCode;
     private final T data;
 
+
     public static <T> ApiResponse<T> createSuccess(String message,Integer statusCode,T data) {
 
         return new ApiResponse<>(message,statusCode,data);

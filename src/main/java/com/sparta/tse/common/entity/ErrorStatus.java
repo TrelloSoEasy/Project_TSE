@@ -74,17 +74,22 @@ public enum ErrorStatus implements BaseCode{
     // 워크스페이스 예외
     _NOT_FOUND_WORKSPACE(HttpStatus.NOT_FOUND,404,"워크스페이스를 찾을 수 없습니다"),
     // 카드 예외
+    _NOT_FOUND_LIST(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 리스트입니다."),
+    _BAD_REQUEST_NOT_FOUND_CARD_MEMBER(HttpStatus.BAD_REQUEST, 400, "카드에 멤버가 존재하지 않음"),
+    _NOT_FOUND_CARD(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 카드입니다."),
     _BAD_REQUEST_NOT_LIST(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 리스트입니다."),
     //유저예외
     _NOT_FOUND_RECEIVING_USER(HttpStatus.NOT_FOUND,404 ,"초대 받은 유저를 찾을 수 없습니다" ),
     _NOT_FOUND_SENDING_USER(HttpStatus.NOT_FOUND,404 ,"초대 보낸 유저를 찾을 수 없습니다"),
 
-    //초대예외
+    //초대예외,
     _INVITATION_ALREADY_EXISTS(HttpStatus.CONFLICT,409,"해당 초대가 이미 존재합니다."),
     _NOT_FOUND_INVITATION(HttpStatus.NOT_FOUND,404 ,"초대를 찾을 수 없습니다"),
 
     // 서버 예외
     _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, "서버 내부 오류가 발생했습니다.");
+
+    // 코멘트 예외
 
 
 
