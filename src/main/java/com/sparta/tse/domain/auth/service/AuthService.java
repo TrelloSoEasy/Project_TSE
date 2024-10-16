@@ -69,7 +69,6 @@ public class AuthService {
 
         return new SignupResponse(bearerToken);
     }
-
     // 이메일 유효성 검사 메서드
     private boolean isValidEmail(String email) {
         return Pattern.matches(EMAIL_PATTERN, email);
