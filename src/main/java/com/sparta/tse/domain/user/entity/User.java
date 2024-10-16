@@ -2,10 +2,15 @@ package com.sparta.tse.domain.user.entity;
 
 import com.sparta.tse.common.entity.Timestamped;
 import com.sparta.tse.config.AuthUser;
+import com.sparta.tse.domain.card_member.entity.CardMember;
 import com.sparta.tse.domain.user.enums.UserRole;
+import com.sparta.tse.domain.workspaceMember.entity.WorkspaceMember;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -29,6 +34,16 @@ public class User extends Timestamped {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
+    // 회원탈퇴 유무
+    private Boolean isdeleted = false;
+
+    @OneToMany(mappedBy = "user")
+    private List<WorkspaceMember> workspaceMembers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<CardMember> cardMembers = new ArrayList<>();
+
+    
     // 유저 생성자
     public User (String email, String nickname,String password, UserRole userRole){
         this.email = email;
@@ -47,6 +62,11 @@ public class User extends Timestamped {
     // 유저 생성 AuthUser 로 하는방식
     public static User fromAuthUser(AuthUser authUser){
         return new User(authUser.getEmail(),authUser.getEmail(),authUser.getUserRole());
+    }
+
+    // 회원 탈퇴 메소드
+    public void deletedUser (String email, String password){
+        this.isdeleted = true;
     }
 
 }

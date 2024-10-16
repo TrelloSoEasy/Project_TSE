@@ -47,6 +47,7 @@ public class JwtSecurityFilter extends OncePerRequestFilter {
                 String email = claims.get("email", String.class);
                 UserRole userRole = UserRole.of(claims.get("userRole", String.class));
 
+
                 // 인증
                 if (SecurityContextHolder.getContext().getAuthentication() == null) {
                     AuthUser authUser = new AuthUser(userId, nickname, email, userRole);
