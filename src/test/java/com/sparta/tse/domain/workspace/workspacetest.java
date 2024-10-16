@@ -2,7 +2,6 @@ package com.sparta.tse.domain.workspace;
 
 import com.sparta.tse.config.AuthUser;
 import com.sparta.tse.domain.user.entity.User;
-import com.sparta.tse.domain.user.entity.UserRole;
 import com.sparta.tse.domain.user.enums.UserRole;
 import com.sparta.tse.domain.workspace.dto.request.WorkspacePostRequestDto;
 import com.sparta.tse.domain.workspace.dto.response.WorkspacePostResponseDto;

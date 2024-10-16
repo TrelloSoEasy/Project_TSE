@@ -35,7 +35,6 @@ public class WorkspaceService {
 
         UserRole userRole = user.getUserRole();
 
-
         Workspace workspace = new Workspace(requestDto.getWorkspaceName(), requestDto.getWorkspaceDescription());
         Workspace savedWorkspace = workspaceRepository.save(workspace);
         return new WorkspacePostResponseDto(savedWorkspace.getWorkspaceId(),savedWorkspace.getName(),savedWorkspace.getDescription());
