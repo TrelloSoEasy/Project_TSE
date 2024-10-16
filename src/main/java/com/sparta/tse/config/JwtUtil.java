@@ -19,7 +19,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private final String BEARER_PREFIX = "Bearer";
+    private final String BEARER_PREFIX = "Bearer ";
     private final long TOKEN_TIME = 60 * 60 * 1000L; // 토큰 유효시간 60분
 
     @Value("${JWT_SECRET_KEY}")
