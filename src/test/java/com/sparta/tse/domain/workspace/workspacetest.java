@@ -1,7 +1,9 @@
 package com.sparta.tse.domain.workspace;
 
+import com.sparta.tse.config.AuthUser;
 import com.sparta.tse.domain.user.entity.User;
 import com.sparta.tse.domain.user.entity.UserRole;
+import com.sparta.tse.domain.user.enums.UserRole;
 import com.sparta.tse.domain.workspace.dto.request.WorkspacePostRequestDto;
 import com.sparta.tse.domain.workspace.dto.response.WorkspacePostResponseDto;
 import com.sparta.tse.domain.workspace.entity.Workspace;
@@ -40,9 +42,10 @@ public class workspacetest {
                 ,"workspaceTestdescription");
         Workspace workspace = new Workspace(requestDto);
         ReflectionTestUtils.setField(workspace, "workspaceId", workspaceId);
+        AuthUser authUser = new AuthUser(1L,"nickname","email", UserRole.USER_ROLE);
         given(workspaceRepository.save(any(Workspace.class))).willReturn(workspace);
 
-        WorkspacePostResponseDto responseDto = workspaceService.postWorkspace(requestDto);
+        WorkspacePostResponseDto responseDto = workspaceService.postWorkspace(requestDto,authUser);
 
         assertEquals(responseDto.getId(), workspaceId);
         assertEquals(responseDto.getWorkspaceName(), requestDto.getWorkspaceName());

@@ -13,6 +13,7 @@ import com.sparta.tse.domain.workspace.entity.Workspace;
 import com.sparta.tse.domain.workspace.service.WorkspaceService;
 import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,8 +26,9 @@ public class WorkspaceController {
     private final InvitationService invitationService;
 
     @PostMapping
-    public ApiResponse<WorkspacePostResponseDto> postWorkspace(@RequestBody WorkspacePostRequestDto requestDto) {
-        WorkspacePostResponseDto responseDto = workspaceService.postWorkspace(requestDto);
+    public ApiResponse<WorkspacePostResponseDto> postWorkspace(@RequestBody WorkspacePostRequestDto requestDto,
+                                                               @AuthenticationPrincipal AuthUser authUser) {
+        WorkspacePostResponseDto responseDto = workspaceService.postWorkspace(requestDto,authUser);
         return ApiResponse.onSuccess(responseDto);
     }
     @PutMapping("/{workspaceId}")
@@ -46,16 +48,16 @@ public class WorkspaceController {
     @PostMapping("/{workspaceId}/invitation/{receiveUserEmail}")
     public void postInvitation(@PathVariable Long workspaceId,
                                @PathVariable String receiveUserEmail,
-                               @RequestBody postInvitationRequestDto requestDto) {
-        invitationService.postInvitation(workspaceId,receiveUserEmail,requestDto);
+                               @AuthenticationPrincipal AuthUser authUser) {
+        invitationService.postInvitation(workspaceId,receiveUserEmail,authUser);
     }
 
     //워크스페이스 초대 요청 받기
     @PostMapping("/{workspaceId}/invitation/{receiveUserEmail}/accept")
     public void acceptInvitation(@PathVariable Long workspaceId,
                                  @PathVariable String receiveUserEmail,
-                                 @RequestBody postInvitationRequestDto requestDto) {
-          invitationService.acceptInvitation(workspaceId,receiveUserEmail,requestDto);
+                                 @AuthenticationPrincipal AuthUser authUser) {
+          invitationService.acceptInvitation(workspaceId,receiveUserEmail,authUser);
 //        NotificationRequestDto requestDto = new NotificationRequestDto("MEMBER_ADDED", nickname);
 //        notificationService.notifiyMemberAdded(requestDto);
     }
