@@ -17,4 +17,8 @@ public class CardRequestDto {
     public LocalDateTime endAt;
     public List<Long> userId;
     public int cardSequence;
+
+    public void cardSequence(int maxSequence) {
+        this.cardSequence = maxSequence;
+    }
 }
