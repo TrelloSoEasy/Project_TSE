@@ -83,7 +83,9 @@ public enum ErrorStatus implements BaseCode{
     _NOT_FOUND_INVITATION(HttpStatus.NOT_FOUND,404 ,"초대를 찾을 수 없습니다"),
 
     // 서버 예외
-    _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, "서버 내부 오류가 발생했습니다.");
+    _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, "서버 내부 오류가 발생했습니다."),
+    _NOT_FOUND_ROLE(HttpStatus.NOT_FOUND,404 ,"해당 권한이 없습니다" ),
+    _NOT_PERMITTED_USER(HttpStatus.FORBIDDEN,403 ,"해당 작업은 OWNER 권한을 가진 유저만 가능합니다");
 
 
 

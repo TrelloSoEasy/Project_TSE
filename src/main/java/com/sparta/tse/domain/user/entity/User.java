@@ -29,6 +29,7 @@ public class User extends Timestamped {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
+    private Boolean isDeleted = false;
     // 유저 생성자
     public User (String email, String nickname,String password, UserRole userRole){
         this.email = email;
@@ -49,4 +50,7 @@ public class User extends Timestamped {
         return new User(authUser.getEmail(),authUser.getEmail(),authUser.getUserRole());
     }
 
+    public void deleteUser() {
+        isDeleted = true;
+    }
 }
