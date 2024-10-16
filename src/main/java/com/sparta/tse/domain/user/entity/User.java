@@ -2,6 +2,7 @@ package com.sparta.tse.domain.user.entity;
 
 import com.sparta.tse.common.entity.Timestamped;
 import com.sparta.tse.config.AuthUser;
+import com.sparta.tse.domain.user.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,11 +37,16 @@ public class User extends Timestamped {
         this.userRole = userRole;
     }
 
-    // 유저 생성 AuthUser 로 하는방식
-    public static User fromAuthUser(AuthUser authUser){
-        return new User(authUser.getEmail(),authUser.getEmail(),authUser.getPassword(),authUser.getUserRole());
+    // AuthUser 로 User 를 만들 때
+    public User (String email, String nickname,UserRole userRole){
+        this.email = email;
+        this.nickname = nickname;
+        this.userRole = userRole;
     }
 
-
+    // 유저 생성 AuthUser 로 하는방식
+    public static User fromAuthUser(AuthUser authUser){
+        return new User(authUser.getEmail(),authUser.getEmail(),authUser.getUserRole());
+    }
 
 }

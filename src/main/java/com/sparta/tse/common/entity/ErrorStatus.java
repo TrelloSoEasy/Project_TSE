@@ -23,7 +23,7 @@ public enum ErrorStatus implements BaseCode{
     _USERNAME_IS_SAME(HttpStatus.BAD_REQUEST,400,"변경하려는 이름이 전과 동일합니다"),
     _NOT_FOUND_EMAIL(HttpStatus.BAD_REQUEST,400,"이메일을 찾을 수 없습니다."),
     _DELETED_USER(HttpStatus.BAD_REQUEST,400,"탈퇴한 계정입니다."),
-    _PASSWORD_NOT_MATCHES(HttpStatus.BAD_REQUEST,400,"비밀번호가 틀렸습니다."),
+    _PASSWORD_NOT_MATCHES(HttpStatus.UNAUTHORIZED,401,"비밀번호가 틀렸습니다."),
     _DUPLICATED_EMAIL(HttpStatus.BAD_REQUEST,400,"중복된 이메일입니다."),
     _INVALID_EMAIL_FORM(HttpStatus.BAD_REQUEST,400,"이메일 형식이 올바르지 않습니다."),
     _INVALID_PASSWORD_FORM(HttpStatus.BAD_REQUEST,400,"비밀번호는 최소 8자 이상이어야 하며, 대소문자 포함 영문, 숫자, 특수문자를 최소 1글자씩 포함해야 합니다."),
@@ -68,7 +68,31 @@ public enum ErrorStatus implements BaseCode{
     // 리뷰 예외
     _BAD_REQUEST_NOT_ORDERER(HttpStatus.BAD_REQUEST, 400, "주문자가 아닙니다."),
     _BAD_REQUEST_DUP_REVIEW(HttpStatus.BAD_REQUEST, 400, "이미 리뷰를 작성했습니다."),
-    _BAD_REQUEST_ORDER_STATUS(HttpStatus.BAD_REQUEST, 400, "완료된 주문에 대해서만 리뷰 작성이 가능합니다.");
+    _BAD_REQUEST_ORDER_STATUS(HttpStatus.BAD_REQUEST, 400, "완료된 주문에 대해서만 리뷰 작성이 가능합니다."),
+
+    // 워크스페이스 예외
+    _NOT_FOUND_WORKSPACE(HttpStatus.NOT_FOUND,404,"워크스페이스를 찾을 수 없습니다"),
+    // 카드 예외
+    _NOT_FOUND_LIST(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 리스트입니다."),
+    _BAD_REQUEST_NOT_FOUND_CARD_MEMBER(HttpStatus.BAD_REQUEST, 400, "카드에 멤버가 존재하지 않음"),
+    _NOT_FOUND_CARD(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 카드입니다."),
+    _BAD_REQUEST_NOT_LIST(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 리스트입니다."),
+    //유저예외
+    _NOT_FOUND_RECEIVING_USER(HttpStatus.NOT_FOUND,404 ,"초대 받은 유저를 찾을 수 없습니다" ),
+    _NOT_FOUND_SENDING_USER(HttpStatus.NOT_FOUND,404 ,"초대 보낸 유저를 찾을 수 없습니다"),
+
+    //초대예외,
+    _INVITATION_ALREADY_EXISTS(HttpStatus.CONFLICT,409,"해당 초대가 이미 존재합니다."),
+    _NOT_FOUND_INVITATION(HttpStatus.NOT_FOUND,404 ,"초대를 찾을 수 없습니다"),
+
+    // 서버 예외
+    _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, "서버 내부 오류가 발생했습니다.");
+
+
+
+
+
+
 
 
     private final HttpStatus httpStatus;
