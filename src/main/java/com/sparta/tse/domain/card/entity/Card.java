@@ -2,7 +2,6 @@ package com.sparta.tse.domain.card.entity;
 
 import com.sparta.tse.common.entity.Timestamped;
 import com.sparta.tse.domain.List.entity.CardList;
-import com.sparta.tse.domain.board.entity.Board;
 import com.sparta.tse.domain.card.dto.CardRequestDto;
 import com.sparta.tse.domain.card_member.entity.CardMember;
 import com.sparta.tse.domain.comment.entity.CardComment;

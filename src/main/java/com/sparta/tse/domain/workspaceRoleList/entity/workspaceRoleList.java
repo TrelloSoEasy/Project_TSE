@@ -1,5 +1,6 @@
 package com.sparta.tse.domain.workspaceRoleList.entity;
 
+
 import com.sparta.tse.domain.workspace.entity.Workspace;
 import jakarta.persistence.*;
 import lombok.Getter;
