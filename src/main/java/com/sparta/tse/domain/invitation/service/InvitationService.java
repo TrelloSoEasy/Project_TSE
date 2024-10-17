@@ -3,8 +3,10 @@ package com.sparta.tse.domain.invitation.service;
 import com.sparta.tse.common.entity.ErrorStatus;
 import com.sparta.tse.common.exception.ApiException;
 import com.sparta.tse.config.AuthUser;
+import com.sparta.tse.domain.invitation.dto.InvitationDto;
 import com.sparta.tse.domain.invitation.dto.request.InvitationPostRequestDto;
 import com.sparta.tse.domain.invitation.dto.request.postInvitationRequestDto;
+import com.sparta.tse.domain.invitation.dto.response.InvitationGetResponseDto;
 import com.sparta.tse.domain.invitation.entity.Invitation;
 import com.sparta.tse.domain.invitation.entity.InvitationStatus;
 import com.sparta.tse.domain.invitation.repository.InvitationRepository;
@@ -99,4 +101,41 @@ public class InvitationService {
         workspace.addMember(workspaceMember);
         workspaceMemberRepository.save(workspaceMember);
     }
+
+    @Transactional
+    public void rejectInvitation(Long workspaceId,Long sendingUserId,AuthUser authUser) {
+        User receiveUser = userRepository.findByEmail(authUser.getEmail()).orElseThrow(()->
+                new ApiException(ErrorStatus._NOT_FOUND_RECEIVING_USER));
+        User sendingUser = userRepository.findById(sendingUserId).orElseThrow(()->
+                new ApiException(ErrorStatus._NOT_FOUND_SENDING_USER));
+        Workspace workspace = workspaceRepository.findById(workspaceId).orElseThrow(()->new ApiException(ErrorStatus._NOT_FOUND_WORKSPACE));
+        //초대를 찾음
+        Invitation isItExists = invitationRepository.findByReceivingUserAndSendingUserAndInvitationStatusAndWorkspaceId(
+                receiveUser,
+                sendingUser,
+                InvitationStatus.Pending,
+                workspaceId
+        );
+
+        if(isItExists==null) {
+            throw new ApiException(ErrorStatus._NOT_FOUND_INVITATION);
+        }
+        //초대 거절
+        isItExists.rejectInvitation();
+    }
+
+    public InvitationGetResponseDto getInvitations(AuthUser authUser) {
+        User user = userRepository.findById(authUser.getUserId()).orElseThrow(
+                ()->new ApiException(ErrorStatus._NOT_FOUND_USER)
+        );
+        List<Invitation> invitationList = invitationRepository.findByReceivingUser(user, InvitationStatus.Pending);
+        InvitationGetResponseDto responseDto = new InvitationGetResponseDto();
+
+        for(Invitation invitation : invitationList) {
+            responseDto.add(new InvitationDto(invitation.getWorkspace().getWorkspaceId(),invitation.getSendingUser().getEmail()));
+        }
+
+        return responseDto;
+    }
+
 }

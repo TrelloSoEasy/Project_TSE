@@ -5,6 +5,9 @@ import com.sparta.tse.domain.workspace.entity.Workspace;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -27,6 +30,11 @@ public class Invitation {
     @JoinColumn(name="receivinguser_id")
     private User receivingUser;
 
+    @CreatedDate
+    @Column(updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    protected LocalDateTime createdAt;
+
     @Enumerated(EnumType.STRING)
     private InvitationStatus invitationStatus;
 
@@ -39,5 +47,9 @@ public class Invitation {
 
     public void acceptInvitation() {
         this.invitationStatus = InvitationStatus.Accepted;
+    }
+
+    public void rejectInvitation() {
+        this.invitationStatus = InvitationStatus.rejected;
     }
 }

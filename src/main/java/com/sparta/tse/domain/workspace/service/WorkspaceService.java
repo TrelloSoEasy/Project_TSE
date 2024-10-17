@@ -8,6 +8,7 @@ import com.sparta.tse.domain.user.repository.UserRepository;
 import com.sparta.tse.domain.workspace.dto.request.WorkspaceDeleteRequestDto;
 import com.sparta.tse.domain.workspace.dto.request.WorkspacePostRequestDto;
 import com.sparta.tse.domain.workspace.dto.request.WorkspaceUpdateRequestDto;
+import com.sparta.tse.domain.workspace.dto.request.updateUserRoleRequestDto;
 import com.sparta.tse.domain.workspace.dto.response.WorkspaceDto;
 import com.sparta.tse.domain.workspace.dto.response.WorkspaceGetResponseDto;
 import com.sparta.tse.domain.workspace.dto.response.WorkspacePostResponseDto;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +41,7 @@ public class WorkspaceService {
         //세이브
         Workspace savedWorkspace = workspaceRepository.save(workspace);
         //그리고 멤버 테이블도 만들어 자동으로 ADMIN인 상태로 멤버테이블에도 저장
-        WorkspaceMember workspaceMember = new WorkspaceMember(savedWorkspace,user, MemberRole.ADMIN);
+        WorkspaceMember workspaceMember = new WorkspaceMember(savedWorkspace,user, MemberRole.OWNER);
         savedWorkspace.addMember(workspaceMember);
         //멤버테이블에도 저장
         workspaceMemberRepository.save(workspaceMember);
@@ -88,10 +90,44 @@ public class WorkspaceService {
                 ()->new ApiException(ErrorStatus._NOT_FOUND_ROLE)
         );
 
-        if(!(Role.equals(MemberRole.ADMIN.toString()))) {
+        if(!(Role.equals(MemberRole.OWNER.toString()))) {
             throw new ApiException(ErrorStatus._NOT_PERMITTED_USER);
             //"해당 작업은 OWNER 권한을 가진 유저만 가능합니다"
         }
         workspaceRepository.delete(workspace);
+    }
+    @Transactional
+    public void updateWorkspaceMemeberRole(Long workspaceId, updateUserRoleRequestDto requestDto, Long userId, AuthUser authUser) {
+        if(!(Objects.equals(requestDto.getRole(), MemberRole.ADMIN.name()) || Objects.equals(requestDto.getRole(), MemberRole.USER.name()))){
+            throw new ApiException(ErrorStatus._BAD_REQUEST);
+        }
+
+        User user = userRepository.findByEmail(authUser.getEmail()).orElseThrow(
+                ()->new ApiException(ErrorStatus._NOT_FOUND_USER)
+        );
+        String role = workspaceMemberRepository.findRoleByEmail(user.getUserId(),workspaceId).orElseThrow(
+                ()->new ApiException(ErrorStatus._NOT_FOUND_USER)
+        );
+
+        if(role.equals(MemberRole.USER.name())) {
+            throw new ApiException(ErrorStatus._NOT_PERMITTED_USER);
+        }
+
+        String isExitsUserInWorkspace= workspaceMemberRepository.findRoleByEmail(userId,workspaceId).orElseThrow(
+                ()->new ApiException(ErrorStatus._NOT_FOUND_USER)
+        );
+
+        if(isExitsUserInWorkspace==null) {
+           throw new ApiException(ErrorStatus._USER_NOT_IN_WORKSPACE);
+        }
+
+        WorkspaceMember workspaceMember = workspaceMemberRepository.findWorkspaceMemberByUserIdAndWorkspaceId(userId,workspaceId);
+
+        if(Objects.equals(requestDto.getRole(), MemberRole.ADMIN.toString())) {
+            workspaceMember.updateMemberRole(MemberRole.ADMIN);
+        }
+        if(Objects.equals(requestDto.getRole(), MemberRole.USER.toString())) {
+            workspaceMember.updateMemberRole(MemberRole.USER);
+        }
     }
 }

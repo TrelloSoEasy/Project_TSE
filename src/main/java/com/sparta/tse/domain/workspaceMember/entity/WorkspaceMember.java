@@ -30,4 +30,8 @@ public class WorkspaceMember {
         this.user = user;
         this.role = role;
     }
+
+    public void updateMemberRole(MemberRole role) {
+        this.role = role;
+    }
 }
