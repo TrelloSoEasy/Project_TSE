@@ -1,10 +1,14 @@
 package com.sparta.tse.domain.board.entity;
 
 import com.sparta.tse.common.entity.Timestamped;
+import com.sparta.tse.domain.List.entity.CardList;
 import com.sparta.tse.domain.workspace.entity.Workspace;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -26,8 +30,8 @@ public class Board extends Timestamped{
 
     private boolean isDeleted;
 
-    //    @OneToMany(mappedBy = "board",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    //    private List<List> lists = new ArrayList<>();
+        @OneToMany(mappedBy = "board",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+        private List<CardList> lists = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name= "workspace_id")
