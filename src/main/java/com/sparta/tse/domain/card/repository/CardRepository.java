@@ -78,6 +78,8 @@ public interface CardRepository extends JpaRepository<Card, Long> {
                                                           @Param("boardId") Long boardId,
                                                           @Param("assigneeName") String assigneeName,
                                                           Pageable pageable);
+
 }
+
 
 
