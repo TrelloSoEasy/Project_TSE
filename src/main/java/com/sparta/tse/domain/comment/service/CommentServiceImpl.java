@@ -12,6 +12,7 @@ import com.sparta.tse.domain.comment.entity.CardComment;
 import com.sparta.tse.domain.comment.repository.CommentRepository;
 import com.sparta.tse.domain.user.dto.UserResponseDto;
 import com.sparta.tse.domain.user.entity.User;
+import com.sparta.tse.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,17 +26,19 @@ public class CommentServiceImpl implements CommentService{
 
     private final CommentRepository commentRepository;
     private final CardRepository cardRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
     public CommentResponseDto createComment(AuthUser authUser, CommentRequestDto commentRequestDto, Long cardId) {
 
-        User user = User.fromAuthUser(authUser);
+        User user = userRepository.findById(authUser.getUserId()).orElseThrow(()->new ApiException(ErrorStatus._NOT_FOUND_USER));
         Card card = cardRepository.findById(cardId).orElseThrow(()-> new ApiException(ErrorStatus._NOT_FOUND_CARD));
 
         CardComment comment = new CardComment(
                 commentRequestDto.getContent(),
-                card
+                card,
+                user
         );
         CardComment savedComment = commentRepository.save(comment);
 
