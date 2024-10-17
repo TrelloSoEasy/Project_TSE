@@ -40,7 +40,7 @@ public class NotificationService {
 
     // 댓글 작성 알림
     public void notifyCommentUpdated(CommentAddedNotificationRequestDto commentAddedNotificationRequestDto) {
-        String message = String.format("%s님의 댓글이 작성되었습니다.", commentAddedNotificationRequestDto.getNickname());
+        String message = String.format("%s님의 댓글이 추가되었습니다.", commentAddedNotificationRequestDto.getNickname());
         discordSender.sendNotification(message);
     }
 }
