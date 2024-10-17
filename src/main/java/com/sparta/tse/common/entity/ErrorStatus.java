@@ -81,6 +81,8 @@ public enum ErrorStatus implements BaseCode{
     //유저예외
     _NOT_FOUND_RECEIVING_USER(HttpStatus.NOT_FOUND,404 ,"초대 받은 유저를 찾을 수 없습니다" ),
     _NOT_FOUND_SENDING_USER(HttpStatus.NOT_FOUND,404 ,"초대 보낸 유저를 찾을 수 없습니다"),
+    _BAD_REQUEST_USER(HttpStatus.BAD_REQUEST, 400, "권한이 없습니다"),
+
 
     //초대예외,
     _INVITATION_ALREADY_EXISTS(HttpStatus.CONFLICT,409,"해당 초대가 이미 존재합니다."),
@@ -95,10 +97,13 @@ public enum ErrorStatus implements BaseCode{
 
     // 파일 예외
     _FILE_SIZE_OVER_ERROR(HttpStatus.BAD_REQUEST, 404, "파일 크기는 5MB를 초과할 수 없습니다."),
-    _FILE_TYPE_MISS_MATCH(HttpStatus.BAD_REQUEST, 404, "jpeg, png, pdf, csv 파일만 지원 합니다.");
+    _FILE_TYPE_MISS_MATCH(HttpStatus.BAD_REQUEST, 404, "jpeg, png, pdf, csv 파일만 지원 합니다."),
 
+    _NOT_FOUND_COMMENT(HttpStatus.NOT_FOUND, 404, "해당 카드에 댓글이 존재하지 않습니다"),
 
-
+    // 보드 예외
+    _NOT_FOUND_BOARD(HttpStatus.NOT_FOUND, 404, "해당 보드를 찾을 수 없습니다"),
+    _BAD_REQUEST_NOT_BOARD(HttpStatus.BAD_REQUEST, 400, "카드 리스트가 해당 보드에 속해 있지 않습니다");
 
 
 
