@@ -17,19 +17,28 @@ import com.sparta.tse.domain.file.entity.File;
 import com.sparta.tse.domain.file.enums.FileEnum;
 import com.sparta.tse.domain.file.repository.FileRepository;
 import com.sparta.tse.domain.file.service.FileService;
+import com.sparta.tse.domain.notification.dto.CardUpdatedNotificationRequestDto;
+import com.sparta.tse.domain.notification.dto.MemberAddedNotificationRequestDto;
+import com.sparta.tse.domain.notification.service.NotificationService;
 import com.sparta.tse.domain.user.entity.User;
 import com.sparta.tse.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.sparta.tse.domain.notification.enums.EventType.CARD_UPDATED;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +52,7 @@ public class CardService {
     private final UserRepository userRepository;
 
     private final CardMemberRepository cardMemberRepository;
+    private final NotificationService notificationService;
     private final FileService fileService;
     private final FileRepository fileRepository;
 
@@ -119,16 +129,28 @@ public class CardService {
         // 추가할 멤버
         addMember(savedCard, requestedUserIds, existingUserIds);
 
-
         savedCard.cardModify(requestDto, savedList);
+
+        savedCard.cardModify(requestDto,savedList);
+
 
         if (file != null && !file.isEmpty()) {
             fileService.uploadFiles(savedCard.getCardId(), file, FileEnum.CARD);
         }
         List<File> image = getImages(savedCard);
 
+        CardUpdatedNotificationRequestDto cardUpdatedNotificationRequestDto = new CardUpdatedNotificationRequestDto(
+                CARD_UPDATED,
+                authUser.getNickname(),
+                savedCard.getCardId()
+        );
+
+        notificationService.notifyCardUpdated(cardUpdatedNotificationRequestDto);
+
         return CardResponseDto.of(savedCard, image);
     }
+
+
 
     private User getUser(Long userIdToDelete) {
         User user = userRepository.findById(userIdToDelete)
@@ -148,6 +170,15 @@ public class CardService {
         return new ApiResponse("삭제 성공", HttpStatus.OK.value(), null);
     }
 
+/*    public Page<Card> cardsSearch(String title,
+                                  String content,
+                                  LocalDateTime dueDate,
+                                  Long BoardId,
+                                  Pageable pageable) {
+        return cardRepository.searchCardsByTitleConTentDueDateAndBoarId(title, content, dueDate, BoardId, pageable);
+    }*/
+
+
     private List<File> getImages(Card savedCard) {
         List<File> image = fileRepository.findBySourceIdAndFileFolder(savedCard.getCardId(), FileEnum.CARD);
         return image;
@@ -163,6 +194,15 @@ public class CardService {
         for (Long userIdToAdd : usersToAdd) {
             User user = getUser(userIdToAdd);
             cardMemberRepository.save(CardMember.of(user, savedCard));
+
+            CardUpdatedNotificationRequestDto cardUpdatedNotificationRequestDto = new CardUpdatedNotificationRequestDto(
+                    CARD_UPDATED,
+                    user.getNickname(),
+                    savedCard.getCardId()
+            );
+
+            notificationService.notifyMemberAddedInCard(cardUpdatedNotificationRequestDto);
+
         }
     }
 
