@@ -73,6 +73,8 @@ public class User extends Timestamped {
     public void deletedUser (String email, String password){
         this.isdeleted = true;
     }
-
+    public void updateUserRole(UserRole newUserRole){
+        this.userRole = newUserRole;
+    }
 
 }

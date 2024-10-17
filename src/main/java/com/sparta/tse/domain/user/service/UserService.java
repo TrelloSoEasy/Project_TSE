@@ -5,11 +5,12 @@ import com.sparta.tse.common.exception.ApiException;
 import com.sparta.tse.config.AuthUser;
 import com.sparta.tse.domain.user.dto.DeleteUserRequestDto;
 import com.sparta.tse.domain.user.entity.User;
+import com.sparta.tse.domain.user.enums.UserRole;
 import com.sparta.tse.domain.user.repository.UserRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,4 +41,18 @@ public class UserService {
         // 변경된 내용 저장
         userRepository.save(user);
     }
+
+    @Transactional
+    public void updateUserAuthority(Long userId, AuthUser authUser) {
+        if(!authUser.getUserRole().equals(UserRole.ADMIN_ROLE)) {
+            throw new ApiException(ErrorStatus._NOT_PERMITTED_USER);
+        }
+        User user = userRepository.findById(userId).orElseThrow(()-> new ApiException(ErrorStatus._NOT_FOUND_USER));
+
+        if(user.getIsdeleted()){
+            throw new ApiException(ErrorStatus._DELETED_USER);
+        }
+        user.updateUserRole(UserRole.ADMIN_ROLE);
+    }
+
 }

@@ -4,6 +4,7 @@ import com.sparta.tse.common.entity.ErrorStatus;
 import com.sparta.tse.common.exception.ApiException;
 import com.sparta.tse.config.AuthUser;
 import com.sparta.tse.domain.user.entity.User;
+import com.sparta.tse.domain.user.enums.UserRole;
 import com.sparta.tse.domain.user.repository.UserRepository;
 import com.sparta.tse.domain.workspace.dto.request.WorkspaceDeleteRequestDto;
 import com.sparta.tse.domain.workspace.dto.request.WorkspacePostRequestDto;
@@ -34,9 +35,16 @@ public class WorkspaceService {
 
     @Transactional
     public WorkspacePostResponseDto postWorkspace(WorkspacePostRequestDto requestDto,AuthUser authUser) {
+        //유저는 워크스페이스를 만들 수 없음.
+        if(authUser.getUserRole().equals(UserRole.USER_ROLE)) {
+            throw new ApiException(ErrorStatus._NOT_PERMITTED_USER);
+        }
+        if(requestDto.getWorkspaceName() == null || requestDto.getWorkspaceName().trim().isEmpty()) {
+            throw new ApiException(ErrorStatus._BAD_REQUEST_INVALID_DATA);
+        }
         //유저를찾는다
         User user = userRepository.findByEmail(authUser.getEmail()).orElseThrow(()->new ApiException(ErrorStatus._NOT_FOUND_USER));
-        //실제로 있는 유저라면 워크스페이스 생성
+
         Workspace workspace = new Workspace(requestDto.getWorkspaceName(), requestDto.getWorkspaceDescription());
         //세이브
         Workspace savedWorkspace = workspaceRepository.save(workspace);
@@ -48,7 +56,7 @@ public class WorkspaceService {
 
         return new WorkspacePostResponseDto(savedWorkspace.getWorkspaceId(),savedWorkspace.getName(),savedWorkspace.getDescription());
     }
-
+    @Transactional
     public void updateWorkspace(Long workspaceId, WorkspaceUpdateRequestDto requestDto, AuthUser authUser) {
         Workspace workspace = workspaceRepository.findById(workspaceId).orElseThrow(()->
                 new ApiException(ErrorStatus._NOT_FOUND_WORKSPACE));
@@ -66,7 +74,6 @@ public class WorkspaceService {
     public List<WorkspaceGetResponseDto> getWorkspaces(AuthUser authUser) {
         List<Workspace> workspaceList = workspaceMemberRepository.findWorkspaceByUserId(authUser.getUserId());
         List<WorkspaceDto> workspaceDtoList = workspaceList.stream().map(WorkspaceDto::new).toList();
-
         return workspaceDtoList.stream().map(WorkspaceGetResponseDto::new).toList();
     }
 
@@ -105,6 +112,9 @@ public class WorkspaceService {
         User user = userRepository.findByEmail(authUser.getEmail()).orElseThrow(
                 ()->new ApiException(ErrorStatus._NOT_FOUND_USER)
         );
+        if(user.getIsdeleted()) {
+            throw new ApiException(ErrorStatus._DELETED_USER);
+        }
         String role = workspaceMemberRepository.findRoleByEmail(user.getUserId(),workspaceId).orElseThrow(
                 ()->new ApiException(ErrorStatus._NOT_FOUND_USER)
         );

@@ -30,7 +30,7 @@ public class WorkspaceController {
     private final InvitationService invitationService;
     private final WorkspaceMemberRepository workspaceMemberRepository;
 
-    @PostMapping("/workspace")
+    @PostMapping("/workspaces")
     public ApiResponse<WorkspacePostResponseDto> postWorkspace(@RequestBody WorkspacePostRequestDto requestDto,
                                                                @AuthenticationPrincipal AuthUser authUser) {
         WorkspacePostResponseDto responseDto = workspaceService.postWorkspace(requestDto,authUser);
@@ -51,8 +51,8 @@ public class WorkspaceController {
         List<WorkspaceGetResponseDto> responseDtoList = workspaceService.getWorkspaces(authUser);
         return ApiResponse.onSuccess(responseDtoList);
     }
-    //유저역할변경
-    @PostMapping("/workspace/{workspaceId}/users/{userId}/role")
+    //유저 멤버역할변경
+    @PutMapping("/workspaces/{workspaceId}/users/{userId}/role")
     public ApiResponse<String> updateUserRole(@PathVariable Long workspaceId,
                                               @RequestBody updateUserRoleRequestDto requestDto,
                                               @PathVariable Long userId,
@@ -62,7 +62,7 @@ public class WorkspaceController {
     }
     //워크스페이스 초대 요청보내기
     //response추가하기 필요
-    @PostMapping("/workspace/{workspaceId}/invitation")
+    @PostMapping("/workspaces/{workspaceId}/invitation")
     public void postInvitation(@PathVariable Long workspaceId,
                                @RequestBody InvitationPostRequestDto requestDto,
                                @AuthenticationPrincipal AuthUser authUser) {
@@ -71,16 +71,14 @@ public class WorkspaceController {
 
     //워크스페이스 초대 요청 받기
     //response추가하기 필요
-    @PostMapping("/workspace/{workspaceId}/invitation/{sendingUserId}")
+    @PostMapping("/workspaces/{workspaceId}/invitation/{sendingUserId}")
     public void acceptInvitation(@PathVariable Long workspaceId,
                                  @PathVariable Long sendingUserId,
                                  @AuthenticationPrincipal AuthUser authUser) {
-          invitationService.acceptInvitation(workspaceId,sendingUserId,authUser);
-//        NotificationRequestDto requestDto = new NotificationRequestDto("MEMBER_ADDED", nickname);
-//        notificationService.notifiyMemberAdded(requestDto);
+        invitationService.acceptInvitation(workspaceId,sendingUserId,authUser);
     }
 
-    @DeleteMapping("/workspace/{workspaceId}")
+    @DeleteMapping("/workspaces/{workspaceId}")
     public void deleteWorkspace(@PathVariable Long workspaceId,
                                 @RequestBody WorkspaceDeleteRequestDto requestDto,
                                 @AuthenticationPrincipal AuthUser authUser) {
