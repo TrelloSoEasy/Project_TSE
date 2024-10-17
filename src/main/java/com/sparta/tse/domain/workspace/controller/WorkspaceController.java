@@ -27,7 +27,7 @@ public class WorkspaceController {
     private final WorkspaceService workspaceService;
     private final InvitationService invitationService;
 
-    @PostMapping
+    @PostMapping("/workspace")
     public ApiResponse<WorkspacePostResponseDto> postWorkspace(@RequestBody WorkspacePostRequestDto requestDto,
                                                                @AuthenticationPrincipal AuthUser authUser) {
         WorkspacePostResponseDto responseDto = workspaceService.postWorkspace(requestDto,authUser);

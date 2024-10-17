@@ -8,12 +8,14 @@ import com.sparta.tse.domain.card.dto.response.CardResponseDto;
 import com.sparta.tse.domain.card.service.CardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +34,13 @@ public class CardController {
     @GetMapping("/cards/{cardId}")
     public ApiResponse<CardResponseDto> cardRead(@AuthenticationPrincipal AuthUser user, @PathVariable Long cardId) {
         return ApiResponse.onSuccess(cardService.cardRead(cardId, user));
+    }
+
+    // 카드조회 인기순위 조회
+    @GetMapping("/cards/rank")
+    public ApiResponse<List<Map<String, String>>> getCardsRanking(@RequestParam(defaultValue = "10") int count) {
+        List<Map<String, String>> ranking = cardService.getCardsRanking(count);
+        return ApiResponse.onSuccess(ranking);
     }
 
     @PatchMapping("/cards/{cardId}")
