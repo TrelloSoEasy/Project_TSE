@@ -11,11 +11,13 @@ import java.util.List;
 @NoArgsConstructor
 public class ListDto {
     private Long listId;
+    private String listTitle;
     private List<CardDto> cards;
     private Integer ListSequence;
 
-    public ListDto(Long listId, Integer ListSequence) {
+    public ListDto(Long listId,String listTitle, Integer ListSequence) {
         this.listId = listId;
+        this.listTitle = listTitle;
         this.ListSequence = ListSequence;
     }
 

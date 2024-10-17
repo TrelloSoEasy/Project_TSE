@@ -28,9 +28,6 @@ public class Board extends Timestamped{
     @Column(length = 20)
     private String image;
 
-    @Enumerated(EnumType.STRING)
-    private Boardenum bookmark;
-
     private boolean isClosed=false;
 
     @OneToMany(mappedBy = "board",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
@@ -42,7 +39,6 @@ public class Board extends Timestamped{
 
     public Board(String title,Workspace workspace) {
         this.title = title;
-        this.bookmark = Boardenum.OFF;
         this.isClosed = false;
         this.workspace = workspace;
         this.lists = new ArrayList<>();
