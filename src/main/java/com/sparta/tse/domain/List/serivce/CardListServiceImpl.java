@@ -98,8 +98,13 @@ public class CardListServiceImpl implements CardListService{
 
     @Override
     @Transactional
-    public void deleteList(Long workspacesId, Long cardListId) {
+    public void deleteList(Long boardId, Long cardListId) {
 
+        Board board = boardRepository.findById(boardId).orElseThrow(()-> new ApiException(ErrorStatus._NOT_FOUND_BOARD));
+
+        CardList cardList = cardListRepository.findById(cardListId).orElseThrow(()-> new ApiException(ErrorStatus._NOT_FOUND_CARD));
+
+        cardListRepository.save(cardList);
     }
 
 

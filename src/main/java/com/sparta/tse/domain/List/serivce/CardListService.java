@@ -13,6 +13,6 @@ public interface CardListService {
     ListResponseDto updateList (ListRequestDto listRequestDto,Long boardId ,Long cardListId);
 
     // 리스트 삭제
-    void deleteList(Long workspacesId, Long cardListId);
+    void deleteList(Long boardId, Long cardListId);
 
 }

@@ -18,18 +18,23 @@ public class CardListController {
 
     private final CardListServiceImpl cardListService;
 
-    @PostMapping("/{boardId}/list/{userId}")
+    @PostMapping("/{boardId}/lists/{userId}")
     public ApiResponse<ListResponseDto> createList(@RequestBody ListRequestDto listRequestDto,
                                                    @PathVariable Long boardId) {
 
         return ApiResponse.createSuccess("리스트 생성 완료", HttpStatus.OK.value(), cardListService.createList(listRequestDto, boardId));
     }
 
-    @PutMapping("/{boardId}/list/{listId}")
+    @PutMapping("/{boardId}/lists/{listId}")
     public ApiResponse<ListResponseDto> updateList(@RequestBody ListRequestDto listRequestDto,
                                                    @PathVariable Long boardId,
                                                    @PathVariable Long listId) {
         return ApiResponse.createSuccess("리스트 수정 완료", HttpStatus.OK.value(), cardListService.updateList(listRequestDto, boardId, listId));
     }
 
+    @DeleteMapping("/{boardId}/lits/{listId}")
+    public ApiResponse<Void> deleteList (@PathVariable Long boardId,
+                                         @PathVariable Long cardListId) {
+        return ApiResponse.createSuccess("리스트 삭제 완료", HttpStatus.OK.value(), null);
+    }
 }
