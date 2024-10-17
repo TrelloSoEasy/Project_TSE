@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 public class CardDto {
     private Long cardId;
     private String cardTitle;
-    private Integer cardSequence;
+    private Long cardSequence;
 
-    public CardDto(Long cardId, String cardTitle, Integer cardSequence) {
+    public CardDto(Long cardId, String cardTitle, Long cardSequence) {
         this.cardId = cardId;
         this.cardTitle = cardTitle;
         this.cardSequence = cardSequence;

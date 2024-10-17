@@ -10,6 +10,9 @@ import com.sparta.tse.domain.comment.dto.CommentResponseDto;
 import com.sparta.tse.domain.comment.dto.CommentSaveResponseDto;
 import com.sparta.tse.domain.comment.entity.CardComment;
 import com.sparta.tse.domain.comment.repository.CommentRepository;
+import com.sparta.tse.domain.notification.dto.CommentAddedNotificationRequestDto;
+import com.sparta.tse.domain.notification.service.NotificationService;
+import com.sparta.tse.domain.notification.enums.EventType;
 import com.sparta.tse.domain.user.dto.UserResponseDto;
 import com.sparta.tse.domain.user.entity.User;
 import com.sparta.tse.domain.user.repository.UserRepository;
@@ -27,12 +30,13 @@ public class CommentServiceImpl implements CommentService{
     private final CommentRepository commentRepository;
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
     public CommentResponseDto createComment(AuthUser authUser, CommentRequestDto commentRequestDto, Long cardId) {
 
-        User user = userRepository.findById(authUser.getUserId()).orElseThrow(()->new ApiException(ErrorStatus._NOT_FOUND_USER));
+        User user = userRepository.findById(authUser.getUserId()).orElseThrow(() -> new ApiException(ErrorStatus._USER_NOT_FOUND));
         Card card = cardRepository.findById(cardId).orElseThrow(()-> new ApiException(ErrorStatus._NOT_FOUND_CARD));
 
         CardComment comment = new CardComment(
@@ -41,6 +45,15 @@ public class CommentServiceImpl implements CommentService{
                 user
         );
         CardComment savedComment = commentRepository.save(comment);
+
+        CommentAddedNotificationRequestDto commentAddedNotificationRequestDto = new CommentAddedNotificationRequestDto(
+                EventType.COMMENT_ADDED,
+                user.getNickname(),
+                cardId,
+                savedComment.getCommentId() // 새로 추가된 댓글 ID
+        );
+
+        notificationService.notifyCommentUpdated(commentAddedNotificationRequestDto);
 
         return new CommentResponseDto(
                 savedComment.getCommentId(),

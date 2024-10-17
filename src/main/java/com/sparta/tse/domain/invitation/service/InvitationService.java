@@ -10,6 +10,9 @@ import com.sparta.tse.domain.invitation.dto.response.InvitationGetResponseDto;
 import com.sparta.tse.domain.invitation.entity.Invitation;
 import com.sparta.tse.domain.invitation.entity.InvitationStatus;
 import com.sparta.tse.domain.invitation.repository.InvitationRepository;
+import com.sparta.tse.domain.notification.dto.MemberAddedNotificationRequestDto;
+import com.sparta.tse.domain.notification.enums.EventType;
+import com.sparta.tse.domain.notification.service.NotificationService;
 import com.sparta.tse.domain.user.entity.User;
 import com.sparta.tse.domain.user.repository.UserRepository;
 import com.sparta.tse.domain.workspace.entity.Workspace;
@@ -31,6 +34,7 @@ public class InvitationService {
     private final WorkspaceRepository workspaceRepository;
     private final UserRepository userRepository;
     private final WorkspaceMemberRepository workspaceMemberRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     public void postInvitation(Long workspaceId,InvitationPostRequestDto requestDto,AuthUser authUser) {
@@ -100,6 +104,20 @@ public class InvitationService {
         WorkspaceMember workspaceMember = new WorkspaceMember(workspace,receiveUser, MemberRole.USER);
         workspace.addMember(workspaceMember);
         workspaceMemberRepository.save(workspaceMember);
+
+        sendMemberAddedNotification(workspace, receiveUser);
+    }
+
+    private void sendMemberAddedNotification(Workspace workspace, User addedUser) {
+        MemberAddedNotificationRequestDto memberAddedNotificationRequestDto = new MemberAddedNotificationRequestDto(
+                EventType.MEMBER_ADDED,
+                addedUser.getNickname(), // 추가된 유저의 닉네임
+                workspace.getWorkspaceId() // 워크스페이스 ID
+        );
+
+        // 알림 서비스 호출
+        notificationService.notifyMemberAdded(memberAddedNotificationRequestDto);
+
     }
 
     @Transactional
@@ -137,5 +155,4 @@ public class InvitationService {
 
         return responseDto;
     }
-
 }

@@ -5,12 +5,10 @@ import com.sparta.tse.domain.card.entity.Card;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Setter
 @Getter
 @Entity
 @Table(name = "card_list")
@@ -39,13 +37,14 @@ public class CardList {
     }
 
     // 평의 메서드: 카드 리스트에 카드를 추가
-    public void addCard(Card card) {
-        this.cards.add(card);
-        card.setCardList(this);
-    }
+//    public void addCard(Card card) {
+//        this.cards.add(card);
+//        card.setCardList(this);
+//    }
 
     public void updateList(Long cardListId, String title) {
         this.cardListId = cardListId;
         this.title = title;
     }
+
 }
