@@ -5,8 +5,8 @@ import com.sparta.tse.domain.card_member.dto.CardMemberResponseDto;
 import com.sparta.tse.domain.card_member.entity.CardMember;
 import com.sparta.tse.domain.comment.dto.CommentResponseDto;
 import com.sparta.tse.domain.comment.entity.CardComment;
-import com.sparta.tse.domain.image.dto.ImagesResponseDto;
-import com.sparta.tse.domain.image.entity.Images;
+import com.sparta.tse.domain.file.dto.ImagesResponseDto;
+import com.sparta.tse.domain.file.entity.File;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -36,7 +36,7 @@ public class CardResponseDto {
                             LocalDateTime endAt,
                             List<CardComment> commentList,
                             List<CardMember> cardMemberList,
-                            List<Images> imageList) {
+                            List<File> imageList) {
 
         this.cardListId = cardListId;
         this.cardId = cardId;
@@ -59,7 +59,7 @@ public class CardResponseDto {
                 .collect(Collectors.toList());
     }
 
-    public static CardResponseDto of(Card card) {
+    public static CardResponseDto of(Card card, List<File> fileList) {
         return new CardResponseDto(card.getCardList().getCardListId(),
                 card.getCardId(),
                 card.getCardTitle(),
@@ -69,7 +69,7 @@ public class CardResponseDto {
                 card.getEndAt(),
                 card.getCommentList(),
                 card.getCardMemberList(),
-                card.getImageList()
+                fileList
         );
     }
 

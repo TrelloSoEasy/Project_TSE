@@ -1,15 +1,16 @@
 package com.sparta.tse.domain.card.entity;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.sparta.tse.common.entity.Timestamped;
 import com.sparta.tse.domain.List.entity.CardList;
 import com.sparta.tse.domain.card.dto.request.CardModifyRequestDto;
 import com.sparta.tse.domain.card.dto.request.CardRequestDto;
 import com.sparta.tse.domain.card_member.entity.CardMember;
 import com.sparta.tse.domain.comment.entity.CardComment;
-import com.sparta.tse.domain.image.entity.Images;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.List;
 @Table(name = "cards")
 @NoArgsConstructor
 @Getter
+@Setter
 public class Card extends Timestamped {
 
     @Id
@@ -44,16 +46,14 @@ public class Card extends Timestamped {
     @JoinColumn(name = "card_list_id")
     private CardList cardList;
 
-    @OneToMany(mappedBy = "card")
+    @OneToMany(mappedBy = "card", cascade = CascadeType.REMOVE)
     private List<CardComment> commentList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "card")
+    @OneToMany(mappedBy = "card", cascade = CascadeType.REMOVE)
     private List<CardMember> cardMemberList = new ArrayList<>();
 
-    @OneToMany
-    private List<Images> imageList = new ArrayList<>();
 
-    private Card(String cardTitle, String cardContent, LocalDateTime startAt, LocalDateTime endAt, int cardSequence, CardList cardList) {
+    public Card(String cardTitle, String cardContent, LocalDateTime startAt, LocalDateTime endAt, int cardSequence, CardList cardList) {
         this.cardTitle = cardTitle;
         this.cardContent = cardContent;
         this.startAt = startAt;
@@ -61,6 +61,7 @@ public class Card extends Timestamped {
         this.cardSequence = cardSequence;
         this.cardList = cardList;
     }
+
 
     // 정적 팩토리 메서드
     public static Card createCard(CardRequestDto cardRequestDto, CardList cardList) {

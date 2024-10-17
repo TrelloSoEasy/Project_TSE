@@ -3,6 +3,8 @@ package com.sparta.tse.domain.user.entity;
 import com.sparta.tse.common.entity.Timestamped;
 import com.sparta.tse.config.AuthUser;
 import com.sparta.tse.domain.card_member.entity.CardMember;
+import com.sparta.tse.domain.comment.entity.CardComment;
+import com.sparta.tse.domain.comment.entity.CardComment;
 import com.sparta.tse.domain.user.enums.UserRole;
 import com.sparta.tse.domain.workspaceMember.entity.WorkspaceMember;
 import jakarta.persistence.*;
@@ -44,7 +46,10 @@ public class User extends Timestamped {
     @OneToMany(mappedBy = "user")
     private List<CardMember> cardMembers = new ArrayList<>();
 
-    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CardComment> comment = new ArrayList<>();
+
+
     // 유저 생성자
     public User (String email, String nickname,String password, UserRole userRole){
         this.email = email;
