@@ -104,7 +104,8 @@ public enum ErrorStatus implements BaseCode{
 
     // 보드 예외
     _NOT_FOUND_BOARD(HttpStatus.NOT_FOUND, 404, "해당 보드를 찾을 수 없습니다"),
-    _BAD_REQUEST_NOT_BOARD(HttpStatus.BAD_REQUEST, 400, "카드 리스트가 해당 보드에 속해 있지 않습니다");
+    _BAD_REQUEST_NOT_BOARD(HttpStatus.BAD_REQUEST, 400, "카드 리스트가 해당 보드에 속해 있지 않습니다"),
+    _INVALID_POST_BOARD_VALUE(HttpStatus.BAD_REQUEST,404 ,"잘못된 보드 포스트 값입니다");
 
 
 
