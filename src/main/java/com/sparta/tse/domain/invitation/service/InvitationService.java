@@ -31,7 +31,7 @@ public class InvitationService {
     private final WorkspaceMemberRepository workspaceMemberRepository;
 
     @Transactional
-    public void postInvitation(Long workspaceId,InvitationPostRequestDto requestDto, AuthUser authUser) {
+    public void postInvitation(Long workspaceId,InvitationPostRequestDto requestDto,AuthUser authUser) {
         //초대하고싶은 워크스페이스의 존재 확인
         Workspace workspace = workspaceRepository.findById(workspaceId).orElseThrow(()->
                 new ApiException(ErrorStatus._NOT_FOUND_WORKSPACE));
@@ -78,9 +78,11 @@ public class InvitationService {
         if(isItExists==null) {
             throw new ApiException(ErrorStatus._NOT_FOUND_INVITATION);
         }
+
         //초대 승낙
         isItExists.acceptInvitation();
         //같은 워크스페이스id 이면서 초대를 보낸사람은 다른 초대를 전부 accepted로 변경
+        //워크스페이스 1 2,3,4 -> 1번 초대보낼게 1 2 승낙
         List<Invitation> invitations = invitationRepository.findByReceivingUserAndInvitationStatusAndWorkspaceId(
                 receiveUser,
                 InvitationStatus.Pending,

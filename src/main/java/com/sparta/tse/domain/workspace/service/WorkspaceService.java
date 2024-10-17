@@ -61,18 +61,24 @@ public class WorkspaceService {
         }
     }
 
-    public List<WorkspaceGetResponseDto> getWorkspaces(Long userId, AuthUser authUser) {
-        List<Workspace> workspaceList = workspaceMemberRepository.findWorkspaceByUserId(userId);
+    public List<WorkspaceGetResponseDto> getWorkspaces(AuthUser authUser) {
+        List<Workspace> workspaceList = workspaceMemberRepository.findWorkspaceByUserId(authUser.getUserId());
         List<WorkspaceDto> workspaceDtoList = workspaceList.stream().map(WorkspaceDto::new).toList();
 
         return workspaceDtoList.stream().map(WorkspaceGetResponseDto::new).toList();
     }
 
-
-    public void deleteWorkspace(AuthUser authUser, Long workspaceId, WorkspaceDeleteRequestDto requestDto) {
+    @Transactional
+    public void deleteWorkspace(AuthUser authUser, Long workspaceId,WorkspaceDeleteRequestDto requestDto) {
+        if(requestDto.getDeleteCode()==null||requestDto.getDeleteCode().trim().isEmpty()){
+            throw new ApiException(ErrorStatus._BAD_REQUEST);
+        }
+        if(!requestDto.getDeleteCode().equals("삭제하겠습니다")) {
+            throw new ApiException(ErrorStatus._BAD_REQUEST);
+        }
         User user = userRepository.findByEmail(authUser.getEmail()).orElseThrow(
                 ()->new ApiException(ErrorStatus._NOT_FOUND_USER));
-        if(user.getIsDeleted()) {
+        if(user.getIsdeleted()) {
             throw new ApiException(ErrorStatus._DELETED_USER);
         }
         Workspace workspace = workspaceRepository.findById(workspaceId).orElseThrow(
@@ -82,7 +88,7 @@ public class WorkspaceService {
                 ()->new ApiException(ErrorStatus._NOT_FOUND_ROLE)
         );
 
-        if(!(Role.equals(MemberRole.OWNER.toString()))) {
+        if(!(Role.equals(MemberRole.ADMIN.toString()))) {
             throw new ApiException(ErrorStatus._NOT_PERMITTED_USER);
             //"해당 작업은 OWNER 권한을 가진 유저만 가능합니다"
         }
