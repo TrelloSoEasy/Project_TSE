@@ -15,14 +15,14 @@ public class CardRequestDto {
     public LocalDateTime startAt;
     public LocalDateTime endAt;
     public List<Long> userId;
-    public int cardSequence;
+    public Long cardSequence;
 
-    public void cardSequence(int maxSequence) {
+    public void cardSequence(Long maxSequence) {
         this.cardSequence = maxSequence;
     }
 
     public CardRequestDto (Long listId, String cardTitle, String cardContent, LocalDateTime startAt,
-                           LocalDateTime endAt, List<Long> userId, int cardSequence) {
+                           LocalDateTime endAt, List<Long> userId, Long cardSequence) {
         this.listId = listId;
         this.cardTitle = cardTitle;
         this.cardContent = cardContent;

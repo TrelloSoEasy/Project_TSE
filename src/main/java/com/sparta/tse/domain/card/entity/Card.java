@@ -1,6 +1,5 @@
 package com.sparta.tse.domain.card.entity;
 
-import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.sparta.tse.common.entity.Timestamped;
 import com.sparta.tse.domain.List.entity.CardList;
 import com.sparta.tse.domain.card.dto.request.CardModifyRequestDto;
@@ -10,7 +9,6 @@ import com.sparta.tse.domain.comment.entity.CardComment;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,7 +18,6 @@ import java.util.List;
 @Table(name = "cards")
 @NoArgsConstructor
 @Getter
-@Setter
 public class Card extends Timestamped {
 
     @Id
@@ -40,8 +37,10 @@ public class Card extends Timestamped {
     private LocalDateTime endAt;
 
     @Column(name = "card_sequence")
-    private int cardSequence;
+    private Long cardSequence;
 
+    @Column(name = "userId")
+    private Long cardUserId;
     @ManyToOne
     @JoinColumn(name = "card_list_id")
     private CardList cardList;
@@ -53,24 +52,26 @@ public class Card extends Timestamped {
     private List<CardMember> cardMemberList = new ArrayList<>();
 
 
-    public Card(String cardTitle, String cardContent, LocalDateTime startAt, LocalDateTime endAt, int cardSequence, CardList cardList) {
+    private Card(String cardTitle, String cardContent, LocalDateTime startAt, LocalDateTime endAt, Long cardSequence, Long cardUserId, CardList cardList) {
         this.cardTitle = cardTitle;
         this.cardContent = cardContent;
         this.startAt = startAt;
         this.endAt = endAt;
         this.cardSequence = cardSequence;
         this.cardList = cardList;
+        this.cardUserId = cardUserId;
     }
 
 
     // 정적 팩토리 메서드
-    public static Card createCard(CardRequestDto cardRequestDto, CardList cardList) {
+    public static Card createCard(CardRequestDto cardRequestDto, CardList cardList, Long cardUserId) {
         return new Card(
                 cardRequestDto.getCardTitle(),
                 cardRequestDto.getCardContent(),
                 cardRequestDto.getStartAt(),
                 cardRequestDto.getEndAt(),
                 cardRequestDto.getCardSequence(),
+                cardUserId,
                 cardList
         );
     }

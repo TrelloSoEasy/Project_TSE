@@ -8,6 +8,7 @@ import java.util.List;
 @Getter
 public class CardModifyRequestDto {
     public Long listId;
+    public Long cardId;
     public String cardTitle;
     public String cardContent;
     public LocalDateTime startAt;

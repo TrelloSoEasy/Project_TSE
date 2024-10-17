@@ -35,6 +35,7 @@ public enum ErrorStatus implements BaseCode{
     _USER_ROLE_IS_NULL(HttpStatus.BAD_REQUEST,400,"유저 권한이 없습니다."),
     _INVALID_USER_NAME(HttpStatus.BAD_REQUEST,400 ,"유저이름은 최소 3자 이상,20자 이하여야 하며, 대소문자 포함 영문,숫자만 사용가능합니다." ),
     _AUTH_DELETED_USER(HttpStatus.FORBIDDEN, 403, "로그인 이메일과 입력한 이메일이 일치하지 않습니다."),
+    _USER_NOT_FOUND(HttpStatus.NOT_FOUND,404,"해당 유저를 찾을 수 없습니다." ),
 
     // 메뉴 예외
     _AUTH_OWNER_MENU(HttpStatus.FORBIDDEN, 403, "메뉴 생성 및 수정은 사장님만 가능합니다."),
@@ -75,7 +76,9 @@ public enum ErrorStatus implements BaseCode{
     _NOT_FOUND_WORKSPACE(HttpStatus.NOT_FOUND,404,"워크스페이스를 찾을 수 없습니다"),
     // 카드 예외
     _NOT_FOUND_LIST(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 리스트입니다."),
-    _BAD_REQUEST_NOT_FOUND_CARD_MEMBER(HttpStatus.BAD_REQUEST, 400, "카드에 멤버가 존재하지 않음"),
+    _NOT_FOUND_CARD_MEMBER(HttpStatus.BAD_REQUEST, 400, "카드에 멤버가 존재하지 않음"),
+    _NOT_THE_AUTHOR(HttpStatus.NOT_ACCEPTABLE, 406, "카드 작성자가 아닙니다."),
+
     _NOT_FOUND_CARD(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 카드입니다."),
     _BAD_REQUEST_NOT_LIST(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 리스트입니다."),
     //유저예외

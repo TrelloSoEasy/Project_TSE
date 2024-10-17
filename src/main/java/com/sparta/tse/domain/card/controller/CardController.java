@@ -34,17 +34,30 @@ public class CardController {
         return ApiResponse.onSuccess(cardService.cardRead(cardId, user));
     }
 
-    @PatchMapping("/cards/{cardId}")
+    @PatchMapping("/cards")
     public ApiResponse<CardResponseDto> cardModify(@AuthenticationPrincipal AuthUser user,
-                                                   @PathVariable Long cardId,
                                                    @RequestPart CardModifyRequestDto requestDto,
                                                    @RequestPart(value = "file", required = false) List<MultipartFile> file
     ) throws IOException {
-        return ApiResponse.createSuccess("수정이 완료 되었습니다.", HttpStatus.OK.value(), cardService.cardModify(cardId, requestDto, file, user));
+        return ApiResponse.createSuccess("수정이 완료 되었습니다.", HttpStatus.OK.value(), cardService.cardModify(requestDto, file, user));
     }
 
     @DeleteMapping("/cards/{cardId}")
-    public ApiResponse cardDeleted(@AuthenticationPrincipal AuthUser user,@PathVariable Long cardId) {
-        return cardService.cardDeleted(cardId);
+    public ApiResponse cardDeleted(@AuthenticationPrincipal AuthUser authUser, @PathVariable Long cardId) {
+        return cardService.cardDeleted(cardId, authUser);
+    }
+
+    @PatchMapping("/cards/{cardId}/sequence/{sequenceNum}/up")
+    public ApiResponse cardUpMove(@AuthenticationPrincipal AuthUser authUser,
+                                  @PathVariable Long cardId,
+                                  @PathVariable Long sequenceNum) {
+        return cardService.cardUpMove(authUser, cardId, sequenceNum);
+    }
+
+    @PatchMapping("/cards/{cardId}/sequence/{sequenceNum}/down")
+    public ApiResponse cardDownMove(@AuthenticationPrincipal AuthUser authUser,
+                                    @PathVariable Long cardId,
+                                    @PathVariable Long sequenceNum) {
+        return cardService.cardDownMove(authUser, cardId, sequenceNum);
     }
 }
