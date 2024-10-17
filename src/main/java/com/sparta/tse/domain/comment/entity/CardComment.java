@@ -29,9 +29,10 @@ public class CardComment extends Timestamped {
     private User user;
 
 
-    public CardComment(String content, Card card) {
+    public CardComment(String content, Card card,User user) {
         this.content = content;
         this.card = card;
+        this.user = user;
     }
 
     public void commentUpdate(String content) {

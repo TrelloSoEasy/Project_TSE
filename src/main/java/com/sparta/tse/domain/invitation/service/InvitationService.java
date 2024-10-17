@@ -3,11 +3,16 @@ package com.sparta.tse.domain.invitation.service;
 import com.sparta.tse.common.entity.ErrorStatus;
 import com.sparta.tse.common.exception.ApiException;
 import com.sparta.tse.config.AuthUser;
+import com.sparta.tse.domain.invitation.dto.InvitationDto;
 import com.sparta.tse.domain.invitation.dto.request.InvitationPostRequestDto;
 import com.sparta.tse.domain.invitation.dto.request.postInvitationRequestDto;
+import com.sparta.tse.domain.invitation.dto.response.InvitationGetResponseDto;
 import com.sparta.tse.domain.invitation.entity.Invitation;
 import com.sparta.tse.domain.invitation.entity.InvitationStatus;
 import com.sparta.tse.domain.invitation.repository.InvitationRepository;
+import com.sparta.tse.domain.notification.dto.MemberAddedNotificationRequestDto;
+import com.sparta.tse.domain.notification.enums.EventType;
+import com.sparta.tse.domain.notification.service.NotificationService;
 import com.sparta.tse.domain.user.entity.User;
 import com.sparta.tse.domain.user.repository.UserRepository;
 import com.sparta.tse.domain.workspace.entity.Workspace;
@@ -29,9 +34,10 @@ public class InvitationService {
     private final WorkspaceRepository workspaceRepository;
     private final UserRepository userRepository;
     private final WorkspaceMemberRepository workspaceMemberRepository;
+    private final NotificationService notificationService;
 
     @Transactional
-    public void postInvitation(Long workspaceId,InvitationPostRequestDto requestDto, AuthUser authUser) {
+    public void postInvitation(Long workspaceId,InvitationPostRequestDto requestDto,AuthUser authUser) {
         //초대하고싶은 워크스페이스의 존재 확인
         Workspace workspace = workspaceRepository.findById(workspaceId).orElseThrow(()->
                 new ApiException(ErrorStatus._NOT_FOUND_WORKSPACE));
@@ -78,9 +84,11 @@ public class InvitationService {
         if(isItExists==null) {
             throw new ApiException(ErrorStatus._NOT_FOUND_INVITATION);
         }
+
         //초대 승낙
         isItExists.acceptInvitation();
         //같은 워크스페이스id 이면서 초대를 보낸사람은 다른 초대를 전부 accepted로 변경
+        //워크스페이스 1 2,3,4 -> 1번 초대보낼게 1 2 승낙
         List<Invitation> invitations = invitationRepository.findByReceivingUserAndInvitationStatusAndWorkspaceId(
                 receiveUser,
                 InvitationStatus.Pending,
@@ -96,5 +104,55 @@ public class InvitationService {
         WorkspaceMember workspaceMember = new WorkspaceMember(workspace,receiveUser, MemberRole.USER);
         workspace.addMember(workspaceMember);
         workspaceMemberRepository.save(workspaceMember);
+
+        sendMemberAddedNotification(workspace, receiveUser);
+    }
+
+    private void sendMemberAddedNotification(Workspace workspace, User addedUser) {
+        MemberAddedNotificationRequestDto memberAddedNotificationRequestDto = new MemberAddedNotificationRequestDto(
+                EventType.MEMBER_ADDED,
+                addedUser.getNickname(), // 추가된 유저의 닉네임
+                workspace.getWorkspaceId() // 워크스페이스 ID
+        );
+
+        // 알림 서비스 호출
+        notificationService.notifyMemberAdded(memberAddedNotificationRequestDto);
+
+    }
+
+    @Transactional
+    public void rejectInvitation(Long workspaceId,Long sendingUserId,AuthUser authUser) {
+        User receiveUser = userRepository.findByEmail(authUser.getEmail()).orElseThrow(()->
+                new ApiException(ErrorStatus._NOT_FOUND_RECEIVING_USER));
+        User sendingUser = userRepository.findById(sendingUserId).orElseThrow(()->
+                new ApiException(ErrorStatus._NOT_FOUND_SENDING_USER));
+        Workspace workspace = workspaceRepository.findById(workspaceId).orElseThrow(()->new ApiException(ErrorStatus._NOT_FOUND_WORKSPACE));
+        //초대를 찾음
+        Invitation isItExists = invitationRepository.findByReceivingUserAndSendingUserAndInvitationStatusAndWorkspaceId(
+                receiveUser,
+                sendingUser,
+                InvitationStatus.Pending,
+                workspaceId
+        );
+
+        if(isItExists==null) {
+            throw new ApiException(ErrorStatus._NOT_FOUND_INVITATION);
+        }
+        //초대 거절
+        isItExists.rejectInvitation();
+    }
+
+    public InvitationGetResponseDto getInvitations(AuthUser authUser) {
+        User user = userRepository.findById(authUser.getUserId()).orElseThrow(
+                ()->new ApiException(ErrorStatus._NOT_FOUND_USER)
+        );
+        List<Invitation> invitationList = invitationRepository.findByReceivingUser(user, InvitationStatus.Pending);
+        InvitationGetResponseDto responseDto = new InvitationGetResponseDto();
+
+        for(Invitation invitation : invitationList) {
+            responseDto.add(new InvitationDto(invitation.getWorkspace().getWorkspaceId(),invitation.getSendingUser().getEmail()));
+        }
+
+        return responseDto;
     }
 }

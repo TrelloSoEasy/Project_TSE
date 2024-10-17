@@ -11,13 +11,19 @@ import java.util.List;
 
 public interface InvitationRepository extends JpaRepository<Invitation, Long> {
     @Query("SELECT i FROM Invitation i where i.receivingUser=:receivingUser and i.sendingUser = :sendingUser"
-    +" and i.invitationStatus = :status and i.workspace.workspaceId=:workspaceId")
+    +" and i.invitationStatus = :status and i.workspace.workspaceId=:workspaceId order by i.createdAt desc")
     Invitation findByReceivingUserAndSendingUserAndInvitationStatusAndWorkspaceId(User receivingUser,
                                                                                   User sendingUser,
                                                                                   InvitationStatus status,
                                                                                   Long workspaceId);
 
     @Query("SELECT i from Invitation i where i.receivingUser=:receivingUser and i.invitationStatus=:status" +
-            " and i.workspace.workspaceId=:workspaceId")
-    List<Invitation> findByReceivingUserAndInvitationStatusAndWorkspaceId(User receivingUser, InvitationStatus status, Long workspaceId);
+            " and i.workspace.workspaceId=:workspaceId order by i.createdAt desc")
+    List<Invitation> findByReceivingUserAndInvitationStatusAndWorkspaceId(User receivingUser,
+                                                                          InvitationStatus status,
+                                                                          Long workspaceId);
+    @Query("SELECT i from Invitation i where i.receivingUser=:receivingUser and i.invitationStatus=:status" +
+            " order by i.createdAt desc")
+    List<Invitation> findByReceivingUser(User receivingUser,
+                                         InvitationStatus status);
 }

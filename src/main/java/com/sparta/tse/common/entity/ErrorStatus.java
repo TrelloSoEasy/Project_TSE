@@ -35,6 +35,7 @@ public enum ErrorStatus implements BaseCode{
     _USER_ROLE_IS_NULL(HttpStatus.BAD_REQUEST,400,"유저 권한이 없습니다."),
     _INVALID_USER_NAME(HttpStatus.BAD_REQUEST,400 ,"유저이름은 최소 3자 이상,20자 이하여야 하며, 대소문자 포함 영문,숫자만 사용가능합니다." ),
     _AUTH_DELETED_USER(HttpStatus.FORBIDDEN, 403, "로그인 이메일과 입력한 이메일이 일치하지 않습니다."),
+    _USER_NOT_FOUND(HttpStatus.NOT_FOUND,404,"해당 유저를 찾을 수 없습니다." ),
 
     // 메뉴 예외
     _AUTH_OWNER_MENU(HttpStatus.FORBIDDEN, 403, "메뉴 생성 및 수정은 사장님만 가능합니다."),
@@ -44,7 +45,7 @@ public enum ErrorStatus implements BaseCode{
 
     // 가게 예외
     _NOT_FOUND_USER(HttpStatus.NOT_FOUND, 404, "사용자를 찾을 수 없습니다."),
-    _FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, 403, "사장님 권한이 없습니다."),
+    _FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, 403, "권한이 없습니다."),
     _CONFLICT_STORE_NAME(HttpStatus.CONFLICT, 409, "이미 존재하는 가게 이름입니다."),
     _BAD_REQUEST_INVALID_DATA(HttpStatus.BAD_REQUEST, 400, "유효하지 않은 데이터입니다."),
     _NOT_FOUND_STORE(HttpStatus.NOT_FOUND, 404, "가게를 찾을 수 없습니다."),
@@ -75,7 +76,9 @@ public enum ErrorStatus implements BaseCode{
     _NOT_FOUND_WORKSPACE(HttpStatus.NOT_FOUND,404,"워크스페이스를 찾을 수 없습니다"),
     // 카드 예외
     _NOT_FOUND_LIST(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 리스트입니다."),
-    _BAD_REQUEST_NOT_FOUND_CARD_MEMBER(HttpStatus.BAD_REQUEST, 400, "카드에 멤버가 존재하지 않음"),
+    _NOT_FOUND_CARD_MEMBER(HttpStatus.BAD_REQUEST, 400, "카드에 멤버가 존재하지 않음"),
+    _NOT_THE_AUTHOR(HttpStatus.NOT_ACCEPTABLE, 406, "카드 작성자가 아닙니다."),
+
     _NOT_FOUND_CARD(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 카드입니다."),
     _BAD_REQUEST_NOT_LIST(HttpStatus.BAD_REQUEST, 400,"존재하지 않는 리스트입니다."),
     //유저예외
@@ -91,7 +94,8 @@ public enum ErrorStatus implements BaseCode{
     // 서버 예외
     _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, "서버 내부 오류가 발생했습니다."),
     _NOT_FOUND_ROLE(HttpStatus.NOT_FOUND,404 ,"해당 권한이 없습니다" ),
-    _NOT_PERMITTED_USER(HttpStatus.FORBIDDEN,403 ,"해당 작업은 OWNER 권한을 가진 유저만 가능합니다"),
+    _NOT_PERMITTED_USER(HttpStatus.FORBIDDEN,403 ,"해당 작업은 권한을 가진 유저만 가능합니다"),
+    _BAD_REQUEST(HttpStatus.BAD_REQUEST,404 ,"잘못된 입력입니다." ),
 
     // 코멘트 예외
 
@@ -103,11 +107,16 @@ public enum ErrorStatus implements BaseCode{
 
     // 보드 예외
     _NOT_FOUND_BOARD(HttpStatus.NOT_FOUND, 404, "해당 보드를 찾을 수 없습니다"),
-    _BAD_REQUEST_NOT_BOARD(HttpStatus.BAD_REQUEST, 400, "카드 리스트가 해당 보드에 속해 있지 않습니다");
+    _BAD_REQUEST_NOT_BOARD(HttpStatus.BAD_REQUEST, 400, "카드 리스트가 해당 보드에 속해 있지 않습니다"),
+    _INVALID_POST_BOARD_VALUE(HttpStatus.BAD_REQUEST,400 ,"잘못된 보드 포스트 값입니다"),
+    _AlREADY_CLOSE_BOARD(HttpStatus.BAD_REQUEST,400 ,"이미 닫힌 보드입니다." ),
+    _BOARD_IS_NOT_CLOSED(HttpStatus.BAD_REQUEST,400 ,"보드가 닫히지 않아 재오픈 할수 없습니다."),
+    _TITLE_IS_NULL(HttpStatus.BAD_REQUEST,400 ,"타이틀이 비어 있습니다." ),
+    _USER_NOT_IN_WORKSPACE(HttpStatus.BAD_REQUEST,400 ,"유저가 워크스페이스내에 존재하지 않습니다"),
 
-
-
-
+    // 이모지 예외
+    _NOT_FOUND_EMOJI(HttpStatus.NOT_FOUND, 404, "해당 이모지를 찾을 수 없습니다"),
+    _EMOJI_ALREADY_EXIST_(HttpStatus.BAD_REQUEST, 400, "해당 이모지는 중복 되었습니다" );
 
     private final HttpStatus httpStatus;
     private final Integer statusCode;

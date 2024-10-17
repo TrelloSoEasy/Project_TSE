@@ -30,11 +30,11 @@ public class Workspace extends Timestamped {
     private String description;
 
     @BatchSize(size = 20)
-    @OneToMany(mappedBy = "workspace",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Board> boards;
 
     @BatchSize(size = 10)
-    @OneToMany(mappedBy = "workspace",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<WorkspaceMember> members;
 
     public Workspace(String name, String description) {
