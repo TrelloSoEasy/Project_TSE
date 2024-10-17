@@ -6,9 +6,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class NotificationRequestDto {
+public class CardUpdatedNotificationRequestDto {
 
     private EventType eventType;
     private String nickname;
     private Long cardId;
+
 }
