@@ -17,7 +17,6 @@ import com.sparta.tse.domain.card_member.entity.CardMemberRole;
 import com.sparta.tse.domain.card_member.repository.CardMemberRepository;
 import com.sparta.tse.domain.file.entity.File;
 import com.sparta.tse.domain.file.enums.FileEnum;
-import com.sparta.tse.domain.file.repository.FileRepository;
 import com.sparta.tse.domain.file.service.FileService;
 import com.sparta.tse.domain.notification.dto.CardUpdatedNotificationRequestDto;
 import com.sparta.tse.domain.notification.service.NotificationService;
@@ -56,15 +55,11 @@ public class CardService {
     private final RedisTemplate<String, Integer> redisTemplate;
 
     private final CardRepository cardRepository;
-
     private final CardListRepository cardListRepository;
-
     private final UserRepository userRepository;
-
     private final CardMemberRepository cardMemberRepository;
     private final NotificationService notificationService;
     private final FileService fileService;
-    private final FileRepository fileRepository;
 
 
     @Transactional
@@ -90,7 +85,7 @@ public class CardService {
         if (file != null && !file.isEmpty()) {
             fileService.uploadFiles(savedCard.getCardId(), file, FileEnum.CARD);
         }
-        List<File> image = getImages(savedCard);
+        List<File> image = fileService.getImages(savedCard.getCardId(), FileEnum.CARD);
 
         return CardResponseDto.of(savedCard, image);
 
@@ -130,6 +125,9 @@ public class CardService {
         Card savedCard = cardRepository.findById(cardId).orElseThrow(() ->
                 new ApiException(ErrorStatus._NOT_FOUND_CARD)
         );
+        if (cardMemberRepository.findByMemberIdAndCardId(user.getUserId(), cardId).isEmpty() &&
+                !savedCard.getCardUserId().equals(user.getUserId()))
+            throw new ApiException(ErrorStatus._NOT_FOUND_ROLE);
 
         // 캐시에 카드 정보 저장 (인기순위 조회용)
         if (!redisTemplate.hasKey(cardInfoKey)){
@@ -137,9 +135,9 @@ public class CardService {
             redisTemplate.opsForHash().put(cardInfoKey,"title",savedCard.getCardTitle());
         }
 
-        List<File> image = getImages(savedCard);
         // 현재 카드 조회수
         int views = redisTemplate.opsForValue().get(viewKey);
+        List<File> image = fileService.getImages(savedCard.getCardId(), FileEnum.CARD);
 
         return CardResponseDto.of(savedCard, image);
     }
@@ -227,7 +225,7 @@ public class CardService {
         if (file != null && !file.isEmpty()) {
             fileService.uploadFiles(savedCard.getCardId(), file, FileEnum.CARD);
         }
-        List<File> image = getImages(savedCard);
+        List<File> image = fileService.getImages(savedCard.getCardId(), FileEnum.CARD);
 
         CardUpdatedNotificationRequestDto cardUpdatedNotificationRequestDto = new CardUpdatedNotificationRequestDto(
                 CARD_UPDATED,
@@ -285,11 +283,6 @@ public class CardService {
 
     }
 
-
-    private List<File> getImages(Card savedCard) {
-        List<File> image = fileRepository.findBySourceIdAndFileFolder(savedCard.getCardId(), FileEnum.CARD);
-        return image;
-    }
 
     private void addMember(Card savedCard, Set<Long> requestedUserIds, Set<Long> existingUserIds) {
         // 추가할 멤버 (요청에서 왔지만 기존에 없는 멤버)

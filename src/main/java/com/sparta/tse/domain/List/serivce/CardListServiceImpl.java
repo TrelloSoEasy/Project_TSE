@@ -2,17 +2,23 @@ package com.sparta.tse.domain.List.serivce;
 
 import com.sparta.tse.common.entity.ErrorStatus;
 import com.sparta.tse.common.exception.ApiException;
+import com.sparta.tse.config.AuthUser;
 import com.sparta.tse.domain.List.dto.ListRequestDto;
 import com.sparta.tse.domain.List.dto.ListResponseDto;
+import com.sparta.tse.domain.List.dto.ListUpdateRequestDto;
 import com.sparta.tse.domain.List.entity.CardList;
 import com.sparta.tse.domain.List.repository.CardListRepository;
 import com.sparta.tse.domain.board.entity.Board;
 import com.sparta.tse.domain.board.repository.BoardRepository;
+import com.sparta.tse.domain.card.entity.Card;
 import com.sparta.tse.domain.user.entity.User;
 import com.sparta.tse.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 import static com.sparta.tse.domain.user.enums.UserRole.USER_ROLE;
 
@@ -27,8 +33,9 @@ public class CardListServiceImpl implements CardListService{
 
     @Override
     @Transactional
-    public ListResponseDto createList(ListRequestDto listRequestDto, Long boardId) {
-
+    public ListResponseDto createList(ListRequestDto listRequestDto, Long boardId, AuthUser authUser) {
+        User user = userRepository.findById(authUser.getUserId()).orElseThrow(
+                ()-> new ApiException(ErrorStatus._NOT_FOUND_USER));
         // 보드가 존재하는지 확인
         Board board = boardRepository.findById(boardId).orElseThrow(()-> new ApiException(ErrorStatus._NOT_FOUND_BOARD));
 
@@ -70,9 +77,11 @@ public class CardListServiceImpl implements CardListService{
         );
     }
 
+
+
     @Override
     @Transactional
-    public ListResponseDto updateList (ListRequestDto listRequestDto, Long boardId, Long cardListId) {
+    public ListResponseDto updateList (ListUpdateRequestDto listUpdateRequestDto, Long boardId, Long cardListId) {
 
         Board board = boardRepository.findById(boardId).orElseThrow(()-> new ApiException(ErrorStatus._BAD_REQUEST_NOT_BOARD));
 
@@ -83,8 +92,8 @@ public class CardListServiceImpl implements CardListService{
         }
 
         cardList.updateList(
-                listRequestDto.getCardListId(),
-                listRequestDto.getTitle()
+                listUpdateRequestDto.getCardListId(),
+                listUpdateRequestDto.getTitle()
         );
 
         // 리스트 저장
@@ -98,8 +107,13 @@ public class CardListServiceImpl implements CardListService{
 
     @Override
     @Transactional
-    public void deleteList(Long workspacesId, Long cardListId) {
+    public void deleteList(Long boardId, Long cardListId) {
 
+        Board board = boardRepository.findById(boardId).orElseThrow(()-> new ApiException(ErrorStatus._NOT_FOUND_BOARD));
+
+        CardList cardList = cardListRepository.findById(cardListId).orElseThrow(()-> new ApiException(ErrorStatus._NOT_FOUND_CARD));
+
+        cardListRepository.save(cardList);
     }
 
 

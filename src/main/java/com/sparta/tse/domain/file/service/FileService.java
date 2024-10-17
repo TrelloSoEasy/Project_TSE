@@ -91,5 +91,10 @@ public class FileService {
         return new ApiResponse("삭제 성공", HttpStatus.OK.value(), null);
     }
 
+    public List<File> getImages(Long sourceId, FileEnum fileEnum) {
+        List<File> image = fileRepository.findBySourceIdAndFileFolder(sourceId, fileEnum);
+        return image;
+    }
+
 }
 

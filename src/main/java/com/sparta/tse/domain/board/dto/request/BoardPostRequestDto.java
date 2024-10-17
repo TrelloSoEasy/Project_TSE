@@ -11,6 +11,4 @@ public class BoardPostRequestDto {
     private String title;
 
     private String backgroundColor;
-
-    private String image;
 }

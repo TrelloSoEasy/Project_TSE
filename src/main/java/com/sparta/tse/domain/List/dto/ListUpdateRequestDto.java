@@ -1,13 +1,14 @@
 package com.sparta.tse.domain.List.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Data;
 
-@Getter
-@NoArgsConstructor
-public class ListRequestDto {
+@Data
+public class ListUpdateRequestDto {
+
     private Long cardListId;
+
     private String title;
+
     private int sequence;
 
 }
