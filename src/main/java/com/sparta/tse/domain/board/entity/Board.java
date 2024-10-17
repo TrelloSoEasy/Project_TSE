@@ -25,7 +25,6 @@ public class Board extends Timestamped{
     @Column(length = 20)
     private String backGroundColor;
 
-
     @Enumerated(EnumType.STRING)
     private Boardenum bookmark;
 
@@ -40,6 +39,7 @@ public class Board extends Timestamped{
 
     public Board(String title,Workspace workspace) {
         this.title = title;
+        this.backGroundColor = backGroundColor;
         this.bookmark = Boardenum.OFF;
         this.isClosed = false;
         this.workspace = workspace;
@@ -50,7 +50,6 @@ public class Board extends Timestamped{
     public void addBackgroundColor (String backGroundColor) {
         this.backGroundColor = backGroundColor;
     }
-
 
     public void closeBoard() {
         this.isClosed = true;

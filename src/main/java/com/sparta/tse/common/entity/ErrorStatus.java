@@ -112,11 +112,11 @@ public enum ErrorStatus implements BaseCode{
     _AlREADY_CLOSE_BOARD(HttpStatus.BAD_REQUEST,400 ,"이미 닫힌 보드입니다." ),
     _BOARD_IS_NOT_CLOSED(HttpStatus.BAD_REQUEST,400 ,"보드가 닫히지 않아 재오픈 할수 없습니다."),
     _TITLE_IS_NULL(HttpStatus.BAD_REQUEST,400 ,"타이틀이 비어 있습니다." ),
-    _USER_NOT_IN_WORKSPACE(HttpStatus.BAD_REQUEST,400 ,"유저가 워크스페이스내에 존재하지 않습니다");
+    _USER_NOT_IN_WORKSPACE(HttpStatus.BAD_REQUEST,400 ,"유저가 워크스페이스내에 존재하지 않습니다"),
 
-
-
-
+    // 이모지 예외
+    _NOT_FOUND_EMOJI(HttpStatus.NOT_FOUND, 404, "해당 이모지를 찾을 수 없습니다"),
+    _EMOJI_ALREADY_EXIST_(HttpStatus.BAD_REQUEST, 400, "해당 이모지는 중복 되었습니다" );
 
     private final HttpStatus httpStatus;
     private final Integer statusCode;

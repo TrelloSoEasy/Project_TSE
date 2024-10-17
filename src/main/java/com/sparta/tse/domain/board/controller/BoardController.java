@@ -2,14 +2,11 @@ package com.sparta.tse.domain.board.controller;
 
 import com.sparta.tse.common.entity.ApiResponse;
 import com.sparta.tse.config.AuthUser;
-import com.sparta.tse.domain.board.dto.response.*;
 import com.sparta.tse.domain.board.dto.request.BoardPostRequestDto;
-import com.sparta.tse.domain.board.entity.Board;
+import com.sparta.tse.domain.board.dto.response.*;
 import com.sparta.tse.domain.board.service.BoardService;
-import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -59,6 +56,7 @@ public class BoardController {
         BoardReopenResponseDto responseDto = boardService.reopenBoard(workspaceId,boardId,authUser);
         return ApiResponse.onSuccess(responseDto);
     }
+
     @DeleteMapping("/{workspaceId}/boards/{boardId}")
     public ApiResponse<String> deleteBoard(@PathVariable Long workspaceId,
                                          @PathVariable Long boardId,
