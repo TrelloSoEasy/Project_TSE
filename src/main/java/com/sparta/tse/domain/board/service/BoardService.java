@@ -140,4 +140,14 @@ public class BoardService {
 
         return new BoardGetResponseDto(listDtos);
     }
+
+    public void deleteBoard(Long workspaceId, Long boardId, AuthUser authUser) {
+        String Role = memberRoleCheck(workspaceId,authUser);
+
+        if(Role.equals(MemberRole.USER.name())) {
+            throw new ApiException(ErrorStatus._FORBIDDEN_ACCESS);
+        }
+
+        boardRepository.deleteById(boardId);
+    }
 }

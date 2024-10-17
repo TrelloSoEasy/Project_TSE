@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/TSE/user")
+@RequestMapping("/TSE/users")
 public class UserController {
 
     private final InvitationService invitationService;
