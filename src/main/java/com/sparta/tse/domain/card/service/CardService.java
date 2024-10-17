@@ -97,8 +97,7 @@ public class CardService {
     }
 
     public CardResponseDto cardRead(Long cardId, AuthUser user) {
-        // 현재 날짜를 년-월-일 형식으로 가져오기 1일!
-        String today = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+
         // Redis Key 설정
         String viewKey = "card:" + cardId + "views"; // 카드 조회수 키
         String userKey = "user:" + user.getUserId() + ":card:" + cardId + ":";
