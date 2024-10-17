@@ -17,7 +17,6 @@ import com.sparta.tse.domain.card_member.entity.CardMemberRole;
 import com.sparta.tse.domain.card_member.repository.CardMemberRepository;
 import com.sparta.tse.domain.file.entity.File;
 import com.sparta.tse.domain.file.enums.FileEnum;
-import com.sparta.tse.domain.file.repository.FileRepository;
 import com.sparta.tse.domain.file.service.FileService;
 import com.sparta.tse.domain.notification.dto.CardUpdatedNotificationRequestDto;
 import com.sparta.tse.domain.notification.service.NotificationService;
@@ -52,7 +51,6 @@ public class CardService {
     private final CardMemberRepository cardMemberRepository;
     private final NotificationService notificationService;
     private final FileService fileService;
-    private final FileRepository fileRepository;
 
 
     @Transactional
@@ -78,7 +76,7 @@ public class CardService {
         if (file != null && !file.isEmpty()) {
             fileService.uploadFiles(savedCard.getCardId(), file, FileEnum.CARD);
         }
-        List<File> image = getImages(savedCard);
+        List<File> image = fileService.getImages(savedCard.getCardId(), FileEnum.CARD);
 
         return CardResponseDto.of(savedCard, image);
 
@@ -86,14 +84,14 @@ public class CardService {
 
     public CardResponseDto cardRead(Long cardId, AuthUser user) {
 
-        if (cardMemberRepository.findByMemberIdAndCardId(user.getUserId(), cardId).isEmpty())
-            throw new ApiException(ErrorStatus._NOT_FOUND_ROLE);
-
         Card savedCard = cardRepository.findById(cardId).orElseThrow(() ->
                 new ApiException(ErrorStatus._NOT_FOUND_CARD)
         );
+        if (cardMemberRepository.findByMemberIdAndCardId(user.getUserId(), cardId).isEmpty() &&
+                !savedCard.getCardUserId().equals(user.getUserId()))
+            throw new ApiException(ErrorStatus._NOT_FOUND_ROLE);
 
-        List<File> image = getImages(savedCard);
+        List<File> image = fileService.getImages(savedCard.getCardId(), FileEnum.CARD);
 
         return CardResponseDto.of(savedCard, image);
 
@@ -152,7 +150,7 @@ public class CardService {
         if (file != null && !file.isEmpty()) {
             fileService.uploadFiles(savedCard.getCardId(), file, FileEnum.CARD);
         }
-        List<File> image = getImages(savedCard);
+        List<File> image = fileService.getImages(savedCard.getCardId(), FileEnum.CARD);
 
         CardUpdatedNotificationRequestDto cardUpdatedNotificationRequestDto = new CardUpdatedNotificationRequestDto(
                 CARD_UPDATED,
@@ -210,11 +208,6 @@ public class CardService {
 
     }
 
-
-    private List<File> getImages(Card savedCard) {
-        List<File> image = fileRepository.findBySourceIdAndFileFolder(savedCard.getCardId(), FileEnum.CARD);
-        return image;
-    }
 
     private void addMember(Card savedCard, Set<Long> requestedUserIds, Set<Long> existingUserIds) {
         // 추가할 멤버 (요청에서 왔지만 기존에 없는 멤버)

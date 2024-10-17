@@ -25,8 +25,6 @@ public class Board extends Timestamped{
     @Column(length = 20)
     private String backGroundColor;
 
-    @Column(length = 20)
-    private String image;
 
     @Enumerated(EnumType.STRING)
     private Boardenum bookmark;
@@ -53,9 +51,6 @@ public class Board extends Timestamped{
         this.backGroundColor = backGroundColor;
     }
 
-    public void addImage(String image) {
-        this.image = image;
-    }
 
     public void closeBoard() {
         this.isClosed = true;

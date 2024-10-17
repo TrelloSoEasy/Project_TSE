@@ -9,6 +9,10 @@ import com.sparta.tse.domain.board.dto.response.*;
 import com.sparta.tse.domain.board.entity.Board;
 import com.sparta.tse.domain.board.repository.BoardRepository;
 import com.sparta.tse.domain.card.repository.CardRepository;
+import com.sparta.tse.domain.file.entity.File;
+import com.sparta.tse.domain.file.enums.FileEnum;
+import com.sparta.tse.domain.file.repository.FileRepository;
+import com.sparta.tse.domain.file.service.FileService;
 import com.sparta.tse.domain.workspace.entity.Workspace;
 import com.sparta.tse.domain.workspace.repository.WorkspaceRepository;
 import com.sparta.tse.domain.workspaceMember.entity.MemberRole;
@@ -16,8 +20,11 @@ import com.sparta.tse.domain.workspaceMember.repository.WorkspaceMemberRepositor
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,9 +35,11 @@ public class BoardService {
     private final WorkspaceRepository workspaceRepository;
     private final CardListRepository cardListRepository;
     private final CardRepository cardRepository;
+    private final FileRepository fileRepository;
+    private final FileService fileService;
 
     @Transactional
-    public BoardPostResponseDto postBoard(Long workspaceId, BoardPostRequestDto requestDto, AuthUser authUser) {
+    public BoardPostResponseDto postBoard(Long workspaceId, BoardPostRequestDto requestDto, AuthUser authUser, List<MultipartFile> file) throws IOException {
         //워크스페이스멤버 레포에서 이사람의 현재 워크스페이스에서의 권한을 가져온다.
         //USER의 경우에는 보드를 생성할 수 없게 만든다.
         String Role = workspaceMemberRepository.findRoleByEmail(authUser.getUserId(),workspaceId).orElseThrow(
@@ -46,7 +55,7 @@ public class BoardService {
             throw new ApiException(ErrorStatus._TITLE_IS_NULL);
         }
         //이미지가 null인경우 = 백그라운드 색을 넣은경우
-        if(requestDto.getImage()==null) {
+        if(requestDto.getBackgroundColor()!=null) {
             Board board = new Board(requestDto.getTitle(),workspace);
             board.addBackgroundColor(requestDto.getBackgroundColor());
             Board savedboard = boardRepository.save(board);
@@ -59,11 +68,15 @@ public class BoardService {
             //백그라운드가 null인경우 = 이미지를 넣은경우
             // 이미지 파일이 들어가는 곳
             Board board = new Board(requestDto.getTitle(),workspace);
-            board.addImage(requestDto.getImage());
             Board savedboard = boardRepository.save(board);
 
+            if (file != null && !file.isEmpty()) {
+                fileService.uploadFiles(savedboard.getBoardId(), file, FileEnum.BOARD);
+            }
+            List<File> image = fileService.getImages(savedboard.getBoardId(), FileEnum.BOARD);
+
             BoardPostResponseDto responseDto = new BoardPostResponseDto(savedboard.getTitle());
-            responseDto.addBoardBackgroundColor(savedboard.getImage());
+            responseDto.addBoardBackgroundImage(image);
             return responseDto;
         } else {
             throw new ApiException(ErrorStatus._INVALID_POST_BOARD_VALUE);
@@ -133,12 +146,16 @@ public class BoardService {
         //유저여도 확인할 수 있음
         List<ListDto> listDtos = cardListRepository.findListsByBoardId(boardId);
 
-        for(ListDto listDto : listDtos) {
-            List<CardDto> cardDtos = cardRepository.cardDtoList(listDto.getListId());
-            listDto.addCard(cardDtos);
-        }
+//        for(ListDto listDto : listDtos) {
+//            List<CardDto> cardDtos = cardRepository.cardDtoList(listDto.getListId());
+//            listDto.addCard(cardDtos);
+//        }
 
-        return new BoardGetResponseDto(listDtos);
+        Board savedboard = boardRepository.findById(boardId).orElseThrow(() -> new ApiException(ErrorStatus._NOT_FOUND_BOARD));
+
+        List<File> image = fileService.getImages(savedboard.getBoardId(), FileEnum.BOARD);
+
+        return new BoardGetResponseDto(listDtos, image);
     }
 
     public void deleteBoard(Long workspaceId, Long boardId, AuthUser authUser) {
