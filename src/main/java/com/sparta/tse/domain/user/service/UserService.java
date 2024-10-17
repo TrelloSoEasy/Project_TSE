@@ -21,6 +21,7 @@ public class UserService {
 
 
     // 회원 탈퇴
+    @Transactional
     public void deletedUser(AuthUser authUser, DeleteUserRequestDto deleteUserRequestDto) {
         // authUser 이메일로 현재 로그인한 User 찾기
         User user = userRepository.findByEmail(authUser.getEmail())

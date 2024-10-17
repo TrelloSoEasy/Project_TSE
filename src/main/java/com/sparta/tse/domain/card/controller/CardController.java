@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,7 +38,14 @@ public class CardController {
         return ApiResponse.onSuccess(cardService.cardRead(cardId, user));
     }
 
-    @PatchMapping("/cards")
+    // 카드조회 인기순위 조회
+    @GetMapping("/cards/rank")
+    public ApiResponse<List<Map<String, String>>> getCardsRanking(@RequestParam(defaultValue = "10") int count) {
+        List<Map<String, String>> ranking = cardService.getCardsRanking(count);
+        return ApiResponse.onSuccess(ranking);
+    }
+
+    @PatchMapping("/cards/{cardId}")
     public ApiResponse<CardResponseDto> cardModify(@AuthenticationPrincipal AuthUser user,
                                                    @RequestPart CardModifyRequestDto requestDto,
                                                    @RequestPart(value = "file", required = false) List<MultipartFile> file

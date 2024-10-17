@@ -23,6 +23,7 @@ import com.sparta.tse.domain.notification.service.NotificationService;
 import com.sparta.tse.domain.user.entity.User;
 import com.sparta.tse.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -44,6 +50,9 @@ import static com.sparta.tse.domain.notification.enums.EventType.CARD_UPDATED;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CardService {
+
+    // Redis
+    private final RedisTemplate<String, Integer> redisTemplate;
 
     private final CardRepository cardRepository;
     private final CardListRepository cardListRepository;
@@ -84,6 +93,35 @@ public class CardService {
 
     public CardResponseDto cardRead(Long cardId, AuthUser user) {
 
+        // Redis Key 설정
+        String viewKey = "card:" + cardId + "views"; // 카드 조회수 키
+        String userKey = "user:" + user.getUserId() + ":card:" + cardId + ":";
+        String cardInfoKey = "card_info" + cardId; // 캐시에 저장 키 (인기순위 조회용)
+        String rankingKey = "popular_cards"; // 인기 카드 랭킹 키
+        // 현재 카드 조회수
+        Integer currentViews = redisTemplate.opsForValue().get(viewKey);
+        if (currentViews == null) {
+            currentViews = 0; // 초기값 설정
+        }
+        System.out.println("currentViews = " + currentViews);
+
+        // 유저 중복 조회 체크
+        if (Boolean.FALSE.equals(redisTemplate.hasKey(userKey))){
+            // 오늘 첫 조회 = 조회수 증가
+            int updatedViews = redisTemplate.opsForValue().increment(viewKey).intValue();
+            System.out.println("updatedViews = " + updatedViews);
+//             유저 조회 기록 저장 (endTime 만큼 유효 = 다음날 00시까지 남은 초)
+            long endTime = getSecondsUntilMidnight();
+            redisTemplate.opsForValue().set(userKey, 1,endTime, TimeUnit.SECONDS);
+            redisTemplate.opsForZSet().incrementScore(rankingKey, cardId.intValue(), 1);
+
+            // 조회수 변경 시 랭킹 점수 업데이트
+            updateRanking(cardId,updatedViews);
+        }
+
+        if (cardMemberRepository.findByMemberIdAndCardId(user.getUserId(), cardId).isEmpty())
+            throw new ApiException(ErrorStatus._NOT_FOUND_ROLE);
+
         Card savedCard = cardRepository.findById(cardId).orElseThrow(() ->
                 new ApiException(ErrorStatus._NOT_FOUND_CARD)
         );
@@ -91,10 +129,47 @@ public class CardService {
                 !savedCard.getCardUserId().equals(user.getUserId()))
             throw new ApiException(ErrorStatus._NOT_FOUND_ROLE);
 
+        // 캐시에 카드 정보 저장 (인기순위 조회용)
+        if (!redisTemplate.hasKey(cardInfoKey)){
+            redisTemplate.opsForHash().put(cardInfoKey,"card_id",savedCard.getCardId().toString());
+            redisTemplate.opsForHash().put(cardInfoKey,"title",savedCard.getCardTitle());
+        }
+
+        // 현재 카드 조회수
+        int views = redisTemplate.opsForValue().get(viewKey);
         List<File> image = fileService.getImages(savedCard.getCardId(), FileEnum.CARD);
 
         return CardResponseDto.of(savedCard, image);
+    }
 
+    // 카드 조회수 인기랭크 조회
+    public  List<Map<String,String>> getCardsRanking(int count){
+        // 인기 카드 랭킹 키
+        String rankingKey = "popular_cards";
+        // 인기 카드 설정 0 번째 부터 ~ count -1 번째까지
+        Set<Integer> topCardIds = redisTemplate.opsForZSet().reverseRange(rankingKey, 0, count-1);
+
+        // 인기카드 리스트
+        List<Map<String,String>> popularCards = new ArrayList<>();
+
+        if (topCardIds != null && !topCardIds.isEmpty()){
+            for (Integer cardId : topCardIds){
+
+                //  Card 정보 가져오기
+                String cardInfoKey = "card_info" + cardId;
+                String title = (String) redisTemplate.opsForHash().get(cardInfoKey,"title");
+                Integer views = redisTemplate.opsForValue().get("card:" + cardId + "views");
+                // Id 와 제목을 Map 에 저장
+                Map<String, String> cardInfo = new HashMap<>();
+                cardInfo.put("card_id",cardId.toString());
+                cardInfo.put("title", title);
+                cardInfo.put("views", views != null ? String.valueOf(views) : "0"); // 조회수가 null 이면 0으로 설정
+
+
+                popularCards.add(cardInfo);
+            }
+        }
+        return popularCards;
     }
 
 
@@ -269,20 +344,24 @@ public class CardService {
         cardRepository.cardSequenceDownModify(sequenceNum, savedCard.getCardId());
         return null;
     }
+
+    // 랭킹 업데이트 로직
+    private void updateRanking(Long cardId, int updatedviews){
+        String rankingKey = "popular_cards";
+        Double currentviews = redisTemplate.opsForZSet().score(rankingKey, cardId);
+
+        // 현재 랭킹 점수와 비교하여 업데이트
+        if(currentviews == null || updatedviews > currentviews){
+            redisTemplate.opsForZSet().add(rankingKey, cardId.intValue(), updatedviews);
+        }
+    }
+
+    // 현재 시간부터 자정까지 남은 초 계산
+    private long getSecondsUntilMidnight() {
+        LocalDateTime now = LocalDateTime.now(); // 지금
+        LocalDateTime midnight = now.toLocalDate().plusDays(1).atStartOfDay(); // 내일 00시
+        return Duration.between(now, midnight).getSeconds(); // 남은 시간 단위:초 (내일 00시 - 지금)
+    }
+
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
