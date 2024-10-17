@@ -145,14 +145,12 @@ public class BoardService {
     public BoardGetResponseDto getBoard(Long boardId, AuthUser authUser) {
         //유저여도 확인할 수 있음
         List<ListDto> listDtos = cardListRepository.findListsByBoardId(boardId);
-
 //        for(ListDto listDto : listDtos) {
 //            List<CardDto> cardDtos = cardRepository.cardDtoList(listDto.getListId());
 //            listDto.addCard(cardDtos);
 //        }
 
         Board savedboard = boardRepository.findById(boardId).orElseThrow(() -> new ApiException(ErrorStatus._NOT_FOUND_BOARD));
-
         List<File> image = fileService.getImages(savedboard.getBoardId(), FileEnum.BOARD);
 
         return new BoardGetResponseDto(listDtos, image);

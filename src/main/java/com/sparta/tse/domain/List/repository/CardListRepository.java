@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface CardListRepository extends JpaRepository<CardList, Long> {
-    @Query("SELECT new com.sparta.tse.domain.board.dto.response.ListDto(l.cardListId, l.sequence) " +
+    @Query("SELECT new com.sparta.tse.domain.board.dto.response.ListDto(l.cardListId,l.title,l.sequence) " +
             "FROM CardList l WHERE l.board.boardId = :boardId ORDER BY l.sequence")
     List<ListDto> findListsByBoardId(@Param("boardId") Long boardId);
 }
