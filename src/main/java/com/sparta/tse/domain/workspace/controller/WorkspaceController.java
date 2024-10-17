@@ -29,7 +29,7 @@ public class WorkspaceController {
     private final WorkspaceService workspaceService;
     private final InvitationService invitationService;
     private final WorkspaceMemberRepository workspaceMemberRepository;
-
+    //워크스페이스 생성
     @PostMapping("/workspaces")
     public ApiResponse<WorkspacePostResponseDto> postWorkspace(@RequestBody WorkspacePostRequestDto requestDto,
                                                                @AuthenticationPrincipal AuthUser authUser) {
@@ -44,7 +44,7 @@ public class WorkspaceController {
         workspaceService.updateWorkspace(workspaceId,requestDto,authUser);
         return ApiResponse.onSuccess(null);
     }
-
+    //유저의 워크스페이스 조회
     @GetMapping("/users/workspaces")
     public ApiResponse<List<WorkspaceGetResponseDto>> getUserWorkspaces (@AuthenticationPrincipal AuthUser authUser) {
 
@@ -63,19 +63,28 @@ public class WorkspaceController {
     //워크스페이스 초대 요청보내기
     //response추가하기 필요
     @PostMapping("/workspaces/{workspaceId}/invitation")
-    public void postInvitation(@PathVariable Long workspaceId,
+    public ApiResponse<String> postInvitation(@PathVariable Long workspaceId,
                                @RequestBody InvitationPostRequestDto requestDto,
                                @AuthenticationPrincipal AuthUser authUser) {
         invitationService.postInvitation(workspaceId,requestDto,authUser);
+        return ApiResponse.onSuccess("워크스페이스 초대 요청 성공!");
     }
 
     //워크스페이스 초대 요청 받기
     //response추가하기 필요
     @PostMapping("/workspaces/{workspaceId}/invitation/{sendingUserId}")
-    public void acceptInvitation(@PathVariable Long workspaceId,
+    public ApiResponse<String> acceptInvitation(@PathVariable Long workspaceId,
                                  @PathVariable Long sendingUserId,
                                  @AuthenticationPrincipal AuthUser authUser) {
         invitationService.acceptInvitation(workspaceId,sendingUserId,authUser);
+        return ApiResponse.onSuccess("초대 요청 승낙 성공");
+    }
+    @PutMapping("/workspaces/{workspaceId}/invitation/{sendingUserId}")
+    public ApiResponse<String> rejectInvitation(@PathVariable Long workspaceId,
+                                 @PathVariable Long sendingUserId,
+                                 @AuthenticationPrincipal AuthUser authUser) {
+        invitationService.rejectInvitation(workspaceId,sendingUserId,authUser);
+        return ApiResponse.onSuccess("초대 요청 거절 성공");
     }
 
     @DeleteMapping("/workspaces/{workspaceId}")
