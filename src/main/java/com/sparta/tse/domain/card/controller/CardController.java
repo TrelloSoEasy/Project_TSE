@@ -43,7 +43,21 @@ public class CardController {
     }
 
     @DeleteMapping("/cards/{cardId}")
-    public ApiResponse cardDeleted(@AuthenticationPrincipal AuthUser authUser,@PathVariable Long cardId) {
+    public ApiResponse cardDeleted(@AuthenticationPrincipal AuthUser authUser, @PathVariable Long cardId) {
         return cardService.cardDeleted(cardId, authUser);
+    }
+
+    @PatchMapping("/cards/{cardId}/sequence/{sequenceNum}/up")
+    public ApiResponse cardUpMove(@AuthenticationPrincipal AuthUser authUser,
+                                  @PathVariable Long cardId,
+                                  @PathVariable Long sequenceNum) {
+        return cardService.cardUpMove(authUser, cardId, sequenceNum);
+    }
+
+    @PatchMapping("/cards/{cardId}/sequence/{sequenceNum}/down")
+    public ApiResponse cardDownMove(@AuthenticationPrincipal AuthUser authUser,
+                                    @PathVariable Long cardId,
+                                    @PathVariable Long sequenceNum) {
+        return cardService.cardDownMove(authUser, cardId, sequenceNum);
     }
 }

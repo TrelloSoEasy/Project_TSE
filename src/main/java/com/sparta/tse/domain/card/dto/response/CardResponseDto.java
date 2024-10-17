@@ -21,7 +21,7 @@ public class CardResponseDto {
     private final Long cardUserId;
     private final String cardTitle;
     private final String cardContent;
-    private final int cardSequence;
+    private final Long cardSequence;
     private final LocalDateTime startAt;
     private final LocalDateTime endAt;
     private final List<CommentResponseDto> cardComments;
@@ -33,7 +33,7 @@ public class CardResponseDto {
                             Long cardUserId,
                             String cardTitle,
                             String cardContent,
-                            int cardSequence,
+                            Long cardSequence,
                             LocalDateTime startAt,
                             LocalDateTime endAt,
                             List<CardComment> commentList,

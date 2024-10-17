@@ -37,7 +37,7 @@ public class Card extends Timestamped {
     private LocalDateTime endAt;
 
     @Column(name = "card_sequence")
-    private int cardSequence;
+    private Long cardSequence;
 
     @Column(name = "userId")
     private Long cardUserId;
@@ -52,7 +52,7 @@ public class Card extends Timestamped {
     private List<CardMember> cardMemberList = new ArrayList<>();
 
 
-    private Card(String cardTitle, String cardContent, LocalDateTime startAt, LocalDateTime endAt, int cardSequence, Long cardUserId, CardList cardList) {
+    private Card(String cardTitle, String cardContent, LocalDateTime startAt, LocalDateTime endAt, Long cardSequence, Long cardUserId, CardList cardList) {
         this.cardTitle = cardTitle;
         this.cardContent = cardContent;
         this.startAt = startAt;
@@ -61,6 +61,7 @@ public class Card extends Timestamped {
         this.cardList = cardList;
         this.cardUserId = cardUserId;
     }
+
 
     // 정적 팩토리 메서드
     public static Card createCard(CardRequestDto cardRequestDto, CardList cardList, Long cardUserId) {

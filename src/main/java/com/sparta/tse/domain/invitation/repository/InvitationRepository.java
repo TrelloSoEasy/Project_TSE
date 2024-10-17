@@ -19,5 +19,7 @@ public interface InvitationRepository extends JpaRepository<Invitation, Long> {
 
     @Query("SELECT i from Invitation i where i.receivingUser=:receivingUser and i.invitationStatus=:status" +
             " and i.workspace.workspaceId=:workspaceId")
-    List<Invitation> findByReceivingUserAndInvitationStatusAndWorkspaceId(User receivingUser, InvitationStatus status, Long workspaceId);
+    List<Invitation> findByReceivingUserAndInvitationStatusAndWorkspaceId(User receivingUser,
+                                                                          InvitationStatus status,
+                                                                          Long workspaceId);
 }

@@ -18,6 +18,8 @@ import com.sparta.tse.domain.file.entity.File;
 import com.sparta.tse.domain.file.enums.FileEnum;
 import com.sparta.tse.domain.file.repository.FileRepository;
 import com.sparta.tse.domain.file.service.FileService;
+import com.sparta.tse.domain.notification.dto.CardUpdatedNotificationRequestDto;
+import com.sparta.tse.domain.notification.service.NotificationService;
 import com.sparta.tse.domain.user.entity.User;
 import com.sparta.tse.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.sparta.tse.domain.notification.enums.EventType.CARD_UPDATED;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -44,6 +48,7 @@ public class CardService {
     private final UserRepository userRepository;
 
     private final CardMemberRepository cardMemberRepository;
+    private final NotificationService notificationService;
     private final FileService fileService;
     private final FileRepository fileRepository;
 
@@ -139,16 +144,29 @@ public class CardService {
 
         savedCard.cardModify(requestDto, savedList);
 
+        savedCard.cardModify(requestDto,savedList);
+
+
         if (file != null && !file.isEmpty()) {
             fileService.uploadFiles(savedCard.getCardId(), file, FileEnum.CARD);
         }
         List<File> image = getImages(savedCard);
 
+        CardUpdatedNotificationRequestDto cardUpdatedNotificationRequestDto = new CardUpdatedNotificationRequestDto(
+                CARD_UPDATED,
+                authUser.getNickname(),
+                savedCard.getCardId()
+        );
+
+        notificationService.notifyCardUpdated(cardUpdatedNotificationRequestDto);
+
         return CardResponseDto.of(savedCard, image);
     }
 
-    private User getUser(Long userId) {
-        User user = userRepository.findById(userId)
+
+
+    private User getUser(Long userIdToDelete) {
+        User user = userRepository.findById(userIdToDelete)
                 .orElseThrow(() -> new ApiException(ErrorStatus._BAD_REQUEST_NOT_FOUND_USER));
         return user;
     }
@@ -169,6 +187,15 @@ public class CardService {
         return new ApiResponse("삭제 성공", HttpStatus.OK.value(), null);
     }
 
+/*    public Page<Card> cardsSearch(String title,
+                                  String content,
+                                  LocalDateTime dueDate,
+                                  Long BoardId,
+                                  Pageable pageable) {
+        return cardRepository.searchCardsByTitleConTentDueDateAndBoarId(title, content, dueDate, BoardId, pageable);
+    }*/
+
+
     private List<File> getImages(Card savedCard) {
         List<File> image = fileRepository.findBySourceIdAndFileFolder(savedCard.getCardId(), FileEnum.CARD);
         return image;
@@ -183,6 +210,15 @@ public class CardService {
         for (Long userIdToAdd : usersToAdd) {
             User user = getUser(userIdToAdd);
             cardMemberRepository.save(CardMember.of(user, savedCard));
+
+            CardUpdatedNotificationRequestDto cardUpdatedNotificationRequestDto = new CardUpdatedNotificationRequestDto(
+                    CARD_UPDATED,
+                    user.getNickname(),
+                    savedCard.getCardId()
+            );
+
+            notificationService.notifyMemberAddedInCard(cardUpdatedNotificationRequestDto);
+
         }
     }
 
@@ -199,4 +235,46 @@ public class CardService {
             cardMemberRepository.delete(cardMemberToDelete);
         }
     }
+
+    @Transactional
+    public ApiResponse cardUpMove(AuthUser authUser, Long cardId, Long sequenceNum) {
+
+        Card savedCard = cardRepository.findById(cardId)
+                .orElseThrow(() -> new ApiException(ErrorStatus._NOT_FOUND_CARD));
+
+        cardRepository.cardSequenceCountUp(savedCard.getCardSequence() -1 , sequenceNum);
+
+        cardRepository.cardSequencUpModify(sequenceNum, savedCard.getCardId());
+
+        return ApiResponse.createError("위치기가 변경되었습니다.", 200);
+
+    }
+
+    @Transactional
+    public ApiResponse cardDownMove(AuthUser authUser, Long cardId, Long sequenceNum) {
+
+        Card savedCard = cardRepository.findById(cardId)
+                .orElseThrow(() -> new ApiException(ErrorStatus._NOT_FOUND_CARD));
+
+
+        cardRepository.cardSequenceCountDown(savedCard.getCardSequence() +1, sequenceNum);
+        cardRepository.cardSequenceDownModify(sequenceNum, savedCard.getCardId());
+        return null;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
