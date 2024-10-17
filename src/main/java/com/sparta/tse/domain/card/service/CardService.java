@@ -46,11 +46,8 @@ import static com.sparta.tse.domain.notification.enums.EventType.CARD_UPDATED;
 public class CardService {
 
     private final CardRepository cardRepository;
-
     private final CardListRepository cardListRepository;
-
     private final UserRepository userRepository;
-
     private final CardMemberRepository cardMemberRepository;
     private final NotificationService notificationService;
     private final FileService fileService;
