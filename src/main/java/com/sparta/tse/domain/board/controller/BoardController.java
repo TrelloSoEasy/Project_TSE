@@ -2,11 +2,13 @@ package com.sparta.tse.domain.board.controller;
 
 import com.sparta.tse.common.entity.ApiResponse;
 import com.sparta.tse.config.AuthUser;
+import com.sparta.tse.domain.board.dto.response.*;
 import com.sparta.tse.domain.board.dto.request.BoardPostRequestDto;
-import com.sparta.tse.domain.board.dto.response.BoardPostResponseDto;
+import com.sparta.tse.domain.board.entity.Board;
 import com.sparta.tse.domain.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,10 +23,34 @@ public class BoardController {
                                                        @RequestBody BoardPostRequestDto requestDto,
                                                        @AuthenticationPrincipal AuthUser authUser) {
         BoardPostResponseDto responseDto = boardService.postBoard(workspaceId,requestDto,authUser);
-
         return ApiResponse.onSuccess(responseDto);
     }
 
-
+    @DeleteMapping("/{workspaceId}/boards/{boardId}/close")
+    public ApiResponse<BoardCloseResponseDto> closeBoard(@PathVariable Long workspaceId,
+                                                         @PathVariable Long boardId,
+                                                         @AuthenticationPrincipal AuthUser authUser) {
+        BoardCloseResponseDto responseDto = boardService.closeBoard(workspaceId,boardId,authUser);
+        return ApiResponse.onSuccess(responseDto);
+    }
+    @GetMapping("/{workspaceId}/boards/closed-boards")
+    public ApiResponse<BoardGetClosedBoardsResponseDto> getClosedBoard(@PathVariable Long workspaceId,
+                                                                       @AuthenticationPrincipal AuthUser authUser) {
+        BoardGetClosedBoardsResponseDto responseDto = boardService.getClosedBoard(workspaceId,authUser);
+        return ApiResponse.onSuccess(responseDto);
+    }
+    @GetMapping("/boards/{boardId}")
+    public ApiResponse<BoardGetResponseDto> getBoard(@PathVariable Long boardId,
+                                                     @AuthenticationPrincipal AuthUser authUser) {
+        BoardGetResponseDto responseDto = boardService.getBoard(boardId,authUser);
+        return ApiResponse.onSuccess(responseDto);
+    }
+    @PutMapping("/{workspaceId}/boards/{boardId}/reopen")
+    public ApiResponse<BoardReopenResponseDto> reopenBoard(@PathVariable Long workspaceId,
+                                                           @PathVariable Long boardId,
+                                                           @AuthenticationPrincipal AuthUser authUser) {
+        BoardReopenResponseDto responseDto = boardService.reopenBoard(workspaceId,boardId,authUser);
+        return ApiResponse.onSuccess(responseDto);
+    }
 
 }

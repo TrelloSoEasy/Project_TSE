@@ -2,6 +2,7 @@ package com.sparta.tse.domain.List.serivce;
 
 import com.sparta.tse.common.entity.ErrorStatus;
 import com.sparta.tse.common.exception.ApiException;
+import com.sparta.tse.config.AuthUser;
 import com.sparta.tse.domain.List.dto.ListRequestDto;
 import com.sparta.tse.domain.List.dto.ListResponseDto;
 import com.sparta.tse.domain.List.entity.CardList;
@@ -27,8 +28,9 @@ public class CardListServiceImpl implements CardListService{
 
     @Override
     @Transactional
-    public ListResponseDto createList(ListRequestDto listRequestDto, Long boardId) {
-
+    public ListResponseDto createList(ListRequestDto listRequestDto, Long boardId, AuthUser authUser) {
+        User user = userRepository.findById(authUser.getUserId()).orElseThrow(
+                ()-> new ApiException(ErrorStatus._NOT_FOUND_USER));
         // 보드가 존재하는지 확인
         Board board = boardRepository.findById(boardId).orElseThrow(()-> new ApiException(ErrorStatus._NOT_FOUND_BOARD));
 

@@ -45,7 +45,7 @@ public enum ErrorStatus implements BaseCode{
 
     // 가게 예외
     _NOT_FOUND_USER(HttpStatus.NOT_FOUND, 404, "사용자를 찾을 수 없습니다."),
-    _FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, 403, "사장님 권한이 없습니다."),
+    _FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, 403, "권한이 없습니다."),
     _CONFLICT_STORE_NAME(HttpStatus.CONFLICT, 409, "이미 존재하는 가게 이름입니다."),
     _BAD_REQUEST_INVALID_DATA(HttpStatus.BAD_REQUEST, 400, "유효하지 않은 데이터입니다."),
     _NOT_FOUND_STORE(HttpStatus.NOT_FOUND, 404, "가게를 찾을 수 없습니다."),
@@ -94,7 +94,7 @@ public enum ErrorStatus implements BaseCode{
     // 서버 예외
     _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, "서버 내부 오류가 발생했습니다."),
     _NOT_FOUND_ROLE(HttpStatus.NOT_FOUND,404 ,"해당 권한이 없습니다" ),
-    _NOT_PERMITTED_USER(HttpStatus.FORBIDDEN,403 ,"해당 작업은 OWNER 권한을 가진 유저만 가능합니다"),
+    _NOT_PERMITTED_USER(HttpStatus.FORBIDDEN,403 ,"해당 작업은 권한을 가진 유저만 가능합니다"),
     _BAD_REQUEST(HttpStatus.BAD_REQUEST,404 ,"잘못된 입력입니다." ),
 
     // 코멘트 예외
@@ -108,7 +108,11 @@ public enum ErrorStatus implements BaseCode{
     // 보드 예외
     _NOT_FOUND_BOARD(HttpStatus.NOT_FOUND, 404, "해당 보드를 찾을 수 없습니다"),
     _BAD_REQUEST_NOT_BOARD(HttpStatus.BAD_REQUEST, 400, "카드 리스트가 해당 보드에 속해 있지 않습니다"),
-    _INVALID_POST_BOARD_VALUE(HttpStatus.BAD_REQUEST,404 ,"잘못된 보드 포스트 값입니다");
+    _INVALID_POST_BOARD_VALUE(HttpStatus.BAD_REQUEST,400 ,"잘못된 보드 포스트 값입니다"),
+    _AlREADY_CLOSE_BOARD(HttpStatus.BAD_REQUEST,400 ,"이미 닫힌 보드입니다." ),
+    _BOARD_IS_NOT_CLOSED(HttpStatus.BAD_REQUEST,400 ,"보드가 닫히지 않아 재오픈 할수 없습니다."),
+    _TITLE_IS_NULL(HttpStatus.BAD_REQUEST,400 ,"타이틀이 비어 있습니다." ),
+    _USER_NOT_IN_WORKSPACE(HttpStatus.BAD_REQUEST,400 ,"유저가 워크스페이스내에 존재하지 않습니다");
 
 
 
