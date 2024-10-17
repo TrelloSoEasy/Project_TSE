@@ -9,6 +9,7 @@ import com.sparta.tse.domain.List.repository.CardListRepository;
 import com.sparta.tse.domain.card.dto.request.CardModifyRequestDto;
 import com.sparta.tse.domain.card.dto.request.CardRequestDto;
 import com.sparta.tse.domain.card.dto.response.CardResponseDto;
+import com.sparta.tse.domain.card.dto.response.CardSearchResponseDto;
 import com.sparta.tse.domain.card.entity.Card;
 import com.sparta.tse.domain.card.repository.CardRepository;
 import com.sparta.tse.domain.card_member.entity.CardMember;
@@ -23,12 +24,16 @@ import com.sparta.tse.domain.notification.service.NotificationService;
 import com.sparta.tse.domain.user.entity.User;
 import com.sparta.tse.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -187,13 +192,26 @@ public class CardService {
         return new ApiResponse("삭제 성공", HttpStatus.OK.value(), null);
     }
 
-/*    public Page<Card> cardsSearch(String title,
-                                  String content,
-                                  LocalDateTime dueDate,
-                                  Long BoardId,
-                                  Pageable pageable) {
-        return cardRepository.searchCardsByTitleConTentDueDateAndBoarId(title, content, dueDate, BoardId, pageable);
-    }*/
+    public ApiResponse <Page<CardSearchResponseDto>> cardsSearch(String title,
+                                                                 String content,
+                                                                 LocalDateTime endAt,
+                                                                 Long boardId,
+                                                                 String assigneeName,
+                                                                 int page,
+                                                                 int size) {
+
+        Pageable pageable = PageRequest.of(0,10);
+
+        Page<Card> cards = cardRepository.searchCardsByTitleConTentDueDateAndBoardId(title,
+                content, endAt, boardId, assigneeName, pageable);
+
+        Page<CardSearchResponseDto> cardSearchResponseDtos = cards.map(card -> new CardSearchResponseDto(
+                card.getCardId(), card.getCardTitle(), card.getCardContent(), card.getEndAt(), card.getCardMemberList() ));
+
+        return ApiResponse.onSuccess(cardSearchResponseDtos);
+
+
+    }
 
 
     private List<File> getImages(Card savedCard) {

@@ -5,14 +5,17 @@ import com.sparta.tse.config.AuthUser;
 import com.sparta.tse.domain.card.dto.request.CardModifyRequestDto;
 import com.sparta.tse.domain.card.dto.request.CardRequestDto;
 import com.sparta.tse.domain.card.dto.response.CardResponseDto;
+import com.sparta.tse.domain.card.dto.response.CardSearchResponseDto;
 import com.sparta.tse.domain.card.service.CardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -59,5 +62,20 @@ public class CardController {
                                     @PathVariable Long cardId,
                                     @PathVariable Long sequenceNum) {
         return cardService.cardDownMove(authUser, cardId, sequenceNum);
+    }
+
+    @GetMapping("/cards/search")
+    public ApiResponse <Page<CardSearchResponseDto>> cardsSearch(@RequestParam(required = false) String title,
+                                                          @RequestParam(required = false) String content,
+                                                          @RequestParam(required = false) LocalDateTime endAt,
+                                                          @RequestParam(required = false) Long boardId,
+                                                          @RequestParam(required = false) String assigneeName,
+                                                          @RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "10") int size
+                                                ) {
+
+        System.out.println("endAt = " + endAt);
+            return cardService.cardsSearch(title, content, endAt, boardId, assigneeName, page, size);
+
     }
 }
