@@ -2,15 +2,16 @@ package com.sparta.tse.domain.board.controller;
 
 import com.sparta.tse.common.entity.ApiResponse;
 import com.sparta.tse.config.AuthUser;
-import com.sparta.tse.domain.board.dto.response.*;
 import com.sparta.tse.domain.board.dto.request.BoardPostRequestDto;
-import com.sparta.tse.domain.board.entity.Board;
+import com.sparta.tse.domain.board.dto.response.*;
 import com.sparta.tse.domain.board.service.BoardService;
-import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/TSE")
@@ -21,9 +22,11 @@ public class BoardController {
 
     @PostMapping("/{workspaceId}/boards")
     public ApiResponse<BoardPostResponseDto> postBoard(@PathVariable Long workspaceId,
-                                                       @RequestBody BoardPostRequestDto requestDto,
-                                                       @AuthenticationPrincipal AuthUser authUser) {
-        BoardPostResponseDto responseDto = boardService.postBoard(workspaceId,requestDto,authUser);
+                                                       @RequestPart BoardPostRequestDto requestDto,
+                                                       @AuthenticationPrincipal AuthUser authUser,
+                                                       @RequestPart(value = "file", required = false) List<MultipartFile> file) throws IOException {
+        System.out.println("workspaceId = " + workspaceId);
+        BoardPostResponseDto responseDto = boardService.postBoard(workspaceId,requestDto,authUser, file);
         return ApiResponse.onSuccess(responseDto);
     }
 
@@ -53,6 +56,7 @@ public class BoardController {
         BoardReopenResponseDto responseDto = boardService.reopenBoard(workspaceId,boardId,authUser);
         return ApiResponse.onSuccess(responseDto);
     }
+
     @DeleteMapping("/{workspaceId}/boards/{boardId}")
     public ApiResponse<String> deleteBoard(@PathVariable Long workspaceId,
                                          @PathVariable Long boardId,

@@ -25,9 +25,6 @@ public class Board extends Timestamped{
     @Column(length = 20)
     private String backGroundColor;
 
-    @Column(length = 20)
-    private String image;
-
     private boolean isClosed=false;
 
     @OneToMany(mappedBy = "board",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
@@ -47,10 +44,6 @@ public class Board extends Timestamped{
 
     public void addBackgroundColor (String backGroundColor) {
         this.backGroundColor = backGroundColor;
-    }
-
-    public void addImage(String image) {
-        this.image = image;
     }
 
     public void closeBoard() {
