@@ -3,9 +3,7 @@ package com.sparta.tse.domain.board.service;
 import com.sparta.tse.common.entity.ErrorStatus;
 import com.sparta.tse.common.exception.ApiException;
 import com.sparta.tse.config.AuthUser;
-import com.sparta.tse.domain.List.entity.CardList;
 import com.sparta.tse.domain.List.repository.CardListRepository;
-import com.sparta.tse.domain.List.serivce.CardListQueryRepository;
 import com.sparta.tse.domain.board.dto.request.BoardPostRequestDto;
 import com.sparta.tse.domain.board.dto.response.*;
 import com.sparta.tse.domain.board.entity.Board;
@@ -30,7 +28,6 @@ public class BoardService {
     private final WorkspaceRepository workspaceRepository;
     private final CardListRepository cardListRepository;
     private final CardRepository cardRepository;
-    private final CardListQueryRepository cardListQueryRepository;
 
     @Transactional
     public BoardPostResponseDto postBoard(Long workspaceId, BoardPostRequestDto requestDto, AuthUser authUser) {
