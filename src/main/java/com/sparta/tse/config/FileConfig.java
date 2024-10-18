@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 public class FileConfig {
 
-    @Value("${cloud.aws.credentials.access-key}")
+    @Value("${cloud.aws.credentials.accessKey}")
     private String accessKey;
 
     @Value("${cloud.aws.credentials.secretKey}")

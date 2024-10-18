@@ -34,7 +34,7 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    // JWT 토큰을 만들때 닉네임 추가.
+    // 토큰 생성
     public String createToken(Long userId, String nickname, String email, UserRole userRole) {
         Date date = new Date();
 

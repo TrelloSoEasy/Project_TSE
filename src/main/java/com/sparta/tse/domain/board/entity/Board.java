@@ -25,13 +25,7 @@ public class Board extends Timestamped{
     @Column(length = 20)
     private String backGroundColor;
 
-    @Column(length = 20)
-    private String image;
-
-    @Enumerated(EnumType.STRING)
-    private Boardenum bookmark;
-
-    private boolean isDeleted;
+    private boolean isClosed=false;
 
     @OneToMany(mappedBy = "board",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<CardList> lists;
@@ -42,8 +36,7 @@ public class Board extends Timestamped{
 
     public Board(String title,Workspace workspace) {
         this.title = title;
-        this.bookmark = Boardenum.OFF;
-        this.isDeleted = false;
+        this.isClosed = false;
         this.workspace = workspace;
         this.lists = new ArrayList<>();
         //리스트를 init하는 생성자가 필요할 거 같습니다.
@@ -53,8 +46,12 @@ public class Board extends Timestamped{
         this.backGroundColor = backGroundColor;
     }
 
-    public void addImage(String image) {
-        this.image = image;
+    public void closeBoard() {
+        this.isClosed = true;
+    }
+
+    public void reopenBoard() {
+        this.isClosed = false;
     }
 }
 

@@ -5,10 +5,15 @@ import com.sparta.tse.domain.workspace.entity.Workspace;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Invitation {
 
     @Id
@@ -27,6 +32,11 @@ public class Invitation {
     @JoinColumn(name="receivinguser_id")
     private User receivingUser;
 
+    @CreatedDate
+    @Column(updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime createdAt;
+
     @Enumerated(EnumType.STRING)
     private InvitationStatus invitationStatus;
 
@@ -39,5 +49,9 @@ public class Invitation {
 
     public void acceptInvitation() {
         this.invitationStatus = InvitationStatus.Accepted;
+    }
+
+    public void rejectInvitation() {
+        this.invitationStatus = InvitationStatus.rejected;
     }
 }
