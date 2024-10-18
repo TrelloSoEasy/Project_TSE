@@ -214,7 +214,6 @@ public class DiscordNotificationSender implements NotificationSender {
 
 
 </details>
-![image](https://github.com/user-attachments/assets/93e0e69f-e0ba-4f0f-a98a-ec150ef45d3b)
 
 
 ----
@@ -249,7 +248,7 @@ public class DiscordNotificationSender implements NotificationSender {
 
 ----
 #### ✔️ 소감과 아쉬웠던 점:
-**이길환** : 
+**이길환** : 역할 분담에 들어가기전 프로젝트의 상세 내용을 확인하고 예상해 역할의 분담을 더 잘했으면 조금 더 역할분배가 잘 되었을 것 같은데 아쉽습니다.
 **홍정기** :
 **이민혁** : 
 **황우석** : 
