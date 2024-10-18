@@ -238,7 +238,7 @@ public class DiscordNotificationSender implements NotificationSender {
    ObjectMapper를 사용하여 이스케이프 처리가 자동으로 처리되도록 하였다.
    ObjectMapper를 사용하여 직렬화를 한다면, 코드의 안정성과 유지보수 측면에서 도움이 되고 오류 가능성을 줄일 수 있다.
 
-## QueryDSL을 사용하다 생긴 문제 :https://github.com/TrelloSoEasy/Project_TSE/wiki/queryDSL%EC%9D%84-%EC%9E%91%EC%84%B1%ED%95%98%EB%8B%A4%EA%B0%80-%EC%83%9D%EA%B8%B4%EB%AC%B8%EC%A0%9C
+#### QueryDSL을 사용하다 생긴 문제 : [WIKI보기](https://github.com/TrelloSoEasy/Project_TSE/wiki/queryDSL%EC%9D%84-%EC%9E%91%EC%84%B1%ED%95%98%EB%8B%A4%EA%B0%80-%EC%83%9D%EA%B8%B4%EB%AC%B8%EC%A0%9C)
 
 ----
 #### ✔️ 소감과 아쉬웠던 점:
