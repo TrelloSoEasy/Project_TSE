@@ -268,13 +268,6 @@ public class DiscordNotificationSender implements NotificationSender {
 **이보성** :
 
 
-----
-
-#### TestCoverage:
-
-
-----
-
 
 
 
