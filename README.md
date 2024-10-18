@@ -119,6 +119,7 @@ S3에 파일을 업로드하기 위해 AmazonS3 객체를 사용하여 파일을
         return UUID.randomUUID().toString() + "-" + file.getOriginalFilename().replace(" ", "_");
     }
 ```
+
 ### 설명:
 uploadFiles 메서드는 파일을 업로드하는 핵심 기능이다.  
 파일 형식과 크기를 먼저 확인한다.  
@@ -135,8 +136,63 @@ AWS S3에 파일을 업로드한 후, 파일의 URL을 받아온다.
 
 
 
+
+    public void notifyMemberAdded(MemberAddedNotificationRequestDto memberAddedNotificationRequestDto) {
+        String message = String.format("%s님이 워크스페이스에 입장하셨습니다.. WorkSpace ID : %d", memberAddedNotificationRequestDto.getNickname(),
+                memberAddedNotificationRequestDto.getWorkSpaceId()
+        );
+        discordSender.sendNotification(message);
+    }
+    
+
+    
+```
+
+@Component
+@AllArgsConstructor
+public class DiscordNotificationSender implements NotificationSender {
+
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
+    private final String discordWebhookUrl =
+            "https://discordapp.com/api/webhooks/1295553870671646791/ETFI6_Nw2-87wzm7iXl1-tG36OBOgXbO5fV1E6EwXXriNMGJ0ky92rajvpRfwCmA4PyC";
+//    private static final Logger logger = LoggerFactory.getLogger(DiscordNotificationSender.class);
+
+
+
+    public ApiResponse sendNotification(String message) {
+
+        Map<String, String> payloadMap = new HashMap<>();
+        payloadMap.put("content", message);
+        String payload;
+        try {
+            // ObjectMapper를 사용하여 Map을 JSON 문자열로 변환
+            payload = objectMapper.writeValueAsString(payloadMap);
+        } catch (JsonProcessingException e) {
+            return ApiResponse.createError("메시지 변환에 실패하였습니다.", 500);
+        }
+        // http 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // http 요청본문, 헤더를 포함한  httpEntity 생성
+        HttpEntity<String> request = new HttpEntity<>(payload, headers);
+
+        try {
+            restTemplate.postForObject(discordWebhookUrl, request, String.class);
+//            logger.info("알림이 성공적으로 전송되었습니다: {}", message);
+            return ApiResponse.createSuccess("알림이 성공적으로 전송되었습니다.", 200, message);
+        } catch (RestClientException e) {
+//            logger.error("알림 전송 실패 : {}", e.getMessage());
+            return ApiResponse.createError("알림 전송에 실패하였습니다.", 500);
+        }
+    }
+}
+```
+
+
 ### 설명 :
-외부 API를 이용하여 중요 이벤트에 대한 변경이 이루어졌을 때, 변경과 동시에 알림을 해당 URL로 실시간 알림이 전송되는 기능
+중요 이벤트에 대한 변경이 이루어진 서비스 로직에 알림을 호출하도록 로직을 통해서, NotificationService의 로직의 메서드를 통해 해당 URL로 실시간 알림이 전송되는 기능
 
 </details>
 
