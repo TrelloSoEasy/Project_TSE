@@ -241,7 +241,7 @@ public class DiscordNotificationSender implements NotificationSender {
 
 <details>
 <summary>queryDSL 사용 중 생긴 일</summary>
-![image](https://github.com/user-attachments/assets/a0af33a2-c5c3-45d5-b671-ac3c1d6231ba)
+
 
 </details>
 
