@@ -13,7 +13,7 @@ public class SignupRequest {
     // 회원가입 요청 값
 
     @NotBlank @Email
-    private String email;
+    private String email; 
     @NotBlank
     private String nickname;
     @NotBlank

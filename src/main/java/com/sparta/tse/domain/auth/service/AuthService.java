@@ -65,8 +65,10 @@ public class AuthService {
                 userRole
         );
 
+// 유저 생성 후 저장 
         User savedUser = userRepository.save(newUser);
 
+// 유저 정보를 가지고 토큰을 생성 
         String bearerToken = jwtUtil.createToken(savedUser.getUserId(),savedUser.getNickname(), savedUser.getEmail(), userRole);
 
         return new SignupResponse(bearerToken);
