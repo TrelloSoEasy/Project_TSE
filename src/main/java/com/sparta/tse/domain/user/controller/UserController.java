@@ -2,7 +2,6 @@ package com.sparta.tse.domain.user.controller;
 
 import com.sparta.tse.config.AuthUser;
 import com.sparta.tse.domain.user.dto.DeleteUserRequestDto;
-import com.sparta.tse.domain.user.repository.UserRepository;
 import com.sparta.tse.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,8 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/TSE/user")
 public class UserController {
 
-    UserService userService;
-    UserRepository userRepository;
+    private final UserService userService;
 
     // 회원 탈퇴
     @DeleteMapping
