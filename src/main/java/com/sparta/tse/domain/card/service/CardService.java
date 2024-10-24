@@ -157,13 +157,7 @@ public class CardService {
 
         if (topCardIds != null && !topCardIds.isEmpty()){
             for (Integer cardId : topCardIds){
-//                // 카드 정보를 DB에서 조회
-//                Card card = cardRepository.findById(Long.valueOf(cardId))
-//                        .orElseThrow(()-> new ApiException(ErrorStatus._NOT_FOUND_CARD));
-//                // 카드의 이미지 가져오기
-//                List<File> images = getImages(card);
-//                // Dto 로 변환
-//                popularCards.add(CardResponseDto.of(card, images));
+
                 //  Card 정보 가져오기
                 String cardInfoKey = "card_info" + cardId;
                 String title = (String) redisTemplate.opsForHash().get(cardInfoKey,"title");
