@@ -1,5 +1,6 @@
 package com.sparta.tse.domain.file.repository;
 
+
 import com.sparta.tse.domain.file.entity.File;
 import com.sparta.tse.domain.file.enums.FileEnum;
 import org.springframework.data.jpa.repository.JpaRepository;

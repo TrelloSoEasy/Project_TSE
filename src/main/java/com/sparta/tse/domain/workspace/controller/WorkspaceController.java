@@ -34,31 +34,30 @@ public class WorkspaceController {
         return ApiResponse.onSuccess(responseDto);
     }
     //워크스페이스 이름,설명 변경
-    @PutMapping("/{workspaceId}")
-    public ApiResponse<Null> updateWorkspace(@RequestBody WorkspaceUpdateRequestDto requestDto,
-                                             @PathVariable Long workspaceId,
+    @PutMapping("/workspace/{workspaceId}")
+    public ApiResponse<Null> updateWorkspace(@PathVariable Long workspaceId,
+                                             @RequestBody WorkspaceUpdateRequestDto requestDto,
                                              @AuthenticationPrincipal AuthUser authUser) {
         workspaceService.updateWorkspace(workspaceId,requestDto,authUser);
         return ApiResponse.onSuccess(null);
     }
 
-    @GetMapping("/{userId}")
-    public ApiResponse<List<WorkspaceGetResponseDto>> getUserWorkspaces (@PathVariable Long userId,
-                                                                         @AuthenticationPrincipal AuthUser authUser) {
+    @GetMapping("/users/workspaces")
+    public ApiResponse<List<WorkspaceGetResponseDto>> getUserWorkspaces (@AuthenticationPrincipal AuthUser authUser) {
 
-        List<WorkspaceGetResponseDto> responseDtoList = workspaceService.getWorkspaces(userId,authUser);
+        List<WorkspaceGetResponseDto> responseDtoList = workspaceService.getWorkspaces(authUser);
         return ApiResponse.onSuccess(responseDtoList);
     }
     //워크스페이스 초대 요청보내기
-    @PostMapping("/{workspaceId}/invitation")
+    @PostMapping("/workspace/{workspaceId}/invitation")
     public void postInvitation(@PathVariable Long workspaceId,
-                               @AuthenticationPrincipal AuthUser authUser,
-                               @RequestBody InvitationPostRequestDto requestDto) {
+                               @RequestBody InvitationPostRequestDto requestDto,
+                               @AuthenticationPrincipal AuthUser authUser) {
         invitationService.postInvitation(workspaceId,requestDto,authUser);
     }
 
     //워크스페이스 초대 요청 받기
-    @PostMapping("/{workspaceId}/invitation/{sendingUserId}/accept")
+    @PostMapping("/workspace/{workspaceId}/invitation/{sendingUserId}")
     public void acceptInvitation(@PathVariable Long workspaceId,
                                  @PathVariable Long sendingUserId,
                                  @AuthenticationPrincipal AuthUser authUser) {
@@ -67,10 +66,10 @@ public class WorkspaceController {
 //        notificationService.notifiyMemberAdded(requestDto);
     }
 
-    @DeleteMapping("/{workspaceId}")
-    public void deleteWorkspace(@AuthenticationPrincipal AuthUser authUser,
-                                @PathVariable Long workspaceId,
-                                @RequestBody WorkspaceDeleteRequestDto requestDto) {
+    @DeleteMapping("/workspace/{workspaceId}")
+    public void deleteWorkspace(@PathVariable Long workspaceId,
+                                @RequestBody WorkspaceDeleteRequestDto requestDto,
+                                @AuthenticationPrincipal AuthUser authUser) {
         workspaceService.deleteWorkspace(authUser,workspaceId,requestDto);
     }
 }

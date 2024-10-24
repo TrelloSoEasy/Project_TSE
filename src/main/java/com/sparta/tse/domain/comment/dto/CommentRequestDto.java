@@ -6,7 +6,6 @@ import lombok.Data;
 @Data
 public class CommentRequestDto {
 
-    @NotBlank
     private String content;
 
 }

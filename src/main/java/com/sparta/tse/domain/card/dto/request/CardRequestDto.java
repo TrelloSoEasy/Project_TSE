@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@NoArgsConstructor
 public class CardRequestDto {
 
     public Long listId;
@@ -16,9 +15,20 @@ public class CardRequestDto {
     public LocalDateTime startAt;
     public LocalDateTime endAt;
     public List<Long> userId;
-    public int cardSequence;
+    public Long cardSequence;
 
-    public void cardSequence(int maxSequence) {
+    public void cardSequence(Long maxSequence) {
         this.cardSequence = maxSequence;
+    }
+
+    public CardRequestDto (Long listId, String cardTitle, String cardContent, LocalDateTime startAt,
+                           LocalDateTime endAt, List<Long> userId, Long cardSequence) {
+        this.listId = listId;
+        this.cardTitle = cardTitle;
+        this.cardContent = cardContent;
+        this.startAt = startAt;
+        this.endAt = endAt;
+        this.userId = userId;
+        this.cardSequence = cardSequence;
     }
 }

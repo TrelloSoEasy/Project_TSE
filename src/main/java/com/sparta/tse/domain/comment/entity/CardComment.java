@@ -3,6 +3,7 @@ package com.sparta.tse.domain.comment.entity;
 import com.sparta.tse.common.entity.Timestamped;
 import com.sparta.tse.domain.card.entity.Card;
 import com.sparta.tse.domain.comment.dto.CommentRequestDto;
+import com.sparta.tse.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,13 +24,18 @@ public class CardComment extends Timestamped {
     @JoinColumn(name = "card_id")
     private Card card;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public CardComment(String content, Card card) {
+
+    public CardComment(String content, Card card,User user) {
         this.content = content;
         this.card = card;
+        this.user = user;
     }
 
-    public void commentUpdate(CommentRequestDto commentRequestDto) {
-        this.content = commentRequestDto.getContent();
+    public void commentUpdate(String content) {
+        this.content = content;
     }
 }
