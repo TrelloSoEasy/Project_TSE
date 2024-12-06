@@ -261,7 +261,7 @@ public class DiscordNotificationSender implements NotificationSender {
 
 **홍정기** :
 
-**이민혁** : 
+**이민혁** : 좀 더 좋은 결과물을 만들 수 있는 팀원들과 함께했는데 욕심을 부리지 못한것이 아쉽습니다.
 
 **황우석** : 
 
